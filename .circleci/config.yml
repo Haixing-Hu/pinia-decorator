@@ -1,0 +1,29 @@
+version: 2.1
+orbs:
+  node: circleci/node@5.1.0
+
+jobs:
+  build:
+    executor:
+      name: node/default
+      tag: 20.8.0
+      resource_class: small
+    steps:
+      - checkout
+      - node/install-packages:
+          pkg-manager: yarn
+          with-cache: true
+      - run:
+          name: Lint
+          command: yarn lint
+      - run:
+          name: Build the library
+          command: yarn build
+
+workflows:
+  build_workflow:
+    jobs:
+      - build:
+          filters:
+            branches:
+              only: master
