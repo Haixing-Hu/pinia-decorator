@@ -19,4 +19,7 @@ export default defineConfig({
     }),
     babel(),                                // must after the vue plugin
   ],
+  test: {
+    environment: 'happy-dom',
+  },
 });

@@ -31,7 +31,8 @@ function WritableState(store, stateName = undefined) {
     }
     const key = stateName ?? context.name;
     delete options.fields[context.name];
-    options['computed'][key] = mapWritableState(store, key);
+    const states = mapWritableState(store, key);
+    options['computed'][key] = states[key];
   });
 }
 
