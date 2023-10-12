@@ -21,6 +21,7 @@ async function bundle(format) {
     minify,
     external: ['pinia', '@haixing_hu/vue3-class-component'],
     drop: ['debugger', 'console'],
+    logLevel: 'info',
   });
 }
 
