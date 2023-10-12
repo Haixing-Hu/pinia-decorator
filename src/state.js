@@ -32,6 +32,10 @@ function State(store, stateName = undefined) {
     const key = stateName ?? context.name;
     delete options.fields[context.name];
     const states = mapState(store, key);
+    console.log('store:', store);
+    console.log('key:', key);
+    console.log('states:', states);
+    console.log('states.json:', JSON.stringify(states));
     options['computed'][key] = states[key];
   });
 }
