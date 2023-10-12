@@ -22,6 +22,7 @@ import { mapState } from 'pinia';
  *     use the name of the decorated class field as the key.
  * @return {function}
  *     A class field decorator function.
+ * @author Haixing Hu
  */
 function State(store, stateName = undefined) {
   return createDecorator((Class, instance, target, context, options) => {

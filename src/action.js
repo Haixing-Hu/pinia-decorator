@@ -22,6 +22,7 @@ import { mapActions } from 'pinia';
  *     use the name of the decorated class field as the key.
  * @return {function}
  *     A class field decorator function.
+ * @author Haixing Hu
  */
 function Action(store, actionName = undefined) {
   return createDecorator((Class, instance, target, context, options) => {
