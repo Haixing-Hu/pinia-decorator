@@ -31,7 +31,8 @@ function Getter(store, getterName = undefined) {
     }
     const key = getterName ?? context.name;
     delete options.fields[context.name];
-    options['computed'][key] = mapState(store, key);
+    const getters = mapState(store, key);
+    options['computed'][key] = getters[key];
   });
 }
 

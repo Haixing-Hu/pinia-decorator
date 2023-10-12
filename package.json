@@ -62,6 +62,7 @@
     "esbuild": "^0.19.4",
     "eslint": "^8.51.0",
     "eslint-plugin-import": "^2.28.1",
+    "happy-dom": "^12.9.1",
     "pinia": "^2.1.6",
     "vite": "^4.4.11",
     "vitest": "^0.34.6",

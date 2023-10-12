@@ -31,7 +31,8 @@ function State(store, stateName = undefined) {
     }
     const key = stateName ?? context.name;
     delete options.fields[context.name];
-    options['computed'][key] = mapState(store, key);
+    const states = mapState(store, key);
+    options['computed'][key] = states[key];
   });
 }
 
