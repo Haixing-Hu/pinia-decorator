@@ -1,0 +1,58 @@
+{
+  "name": "@haixing_hu/pinia-decorator",
+  "version": "0.1.0",
+  "description": "Provides class fields decorators for Pinia and vue3-class-component.",
+  "author": "Haixing Hu",
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Haixing-Hu/pinia-decorator.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Haixing-Hu/pinia-decorator/issues"
+  },
+  "homepage": "https://github.com/Haixing-Hu/pinia-decorator",
+  "keywords": [
+    "vue",
+    "vue3",
+    "vue3-class-component",
+    "pinia",
+    "class style",
+    "decorator"
+  ],
+  "main": "dist/index.cjs.js",
+  "module": "dist/index.es.js",
+  "exports": {
+    ".": {
+      "import": "./dist/index.es.js",
+      "require": "./dist/index.cjs.js"
+    }
+  },
+  "files": [
+    "/dist"
+  ],
+  "scripts": {
+    "clean": "rm -rvf dist",
+    "build": "rollup -c rollup.config.js",
+    "deploy": "yarn && yarn build && npm publish --registry='https://registry.npmjs.com/' --access public"
+  },
+  "peerDependencies": {
+    "@haixing_hu/vue3-class-component": "^1.0.0",
+    "pinia": "^2.0.0",
+    "vue": "^3.0.0"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.0.0",
+    "@haixing_hu/eslint-config": "^1.0.4",
+    "@haixing_hu/jsdoc-minami": "^1.4.0",
+    "@haixing_hu/vue3-class-component": "^1.1.2",
+    "@jest/core": "^29.7.0",
+    "cross-env": "^7.0.3",
+    "eslint": "^8.51.0",
+    "jsdoc": "^4.0.2",
+    "pinia": "^2.1.6",
+    "rollup": "^4.0.2",
+    "vue": "^3.3.4"
+  },
+  "packageManager": "yarn@3.6.4"
+}
