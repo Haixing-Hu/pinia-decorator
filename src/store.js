@@ -19,6 +19,7 @@ import { mapStores } from 'pinia';
  *     the Pinia's `defineStore()` function..
  * @return {function}
  *     A class field decorator function.
+ * @author Haixing Hu
  */
 function Store(store) {
   return createDecorator((Class, instance, target, context, options) => {
