@@ -24,6 +24,7 @@ afterEach(() => {
 
 describe('pinia-decorator', () => {
   describe('Test @State', () => {
+    console.log('MyComponent:', MyComponent);
     const wrapper = mount(MyComponent);
     const vm = wrapper.vm;
     it('should map state with field name', () => {
