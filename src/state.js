@@ -26,17 +26,13 @@ import { mapState } from 'pinia';
  */
 function State(store, stateName = undefined) {
   return createDecorator((Class, instance, target, context, options) => {
-    if (context?.kind !== 'field') {
+    if (context.kind !== 'field') {
       throw new Error('The @State decorator can only be used to decorate a class field.');
     }
     const key = stateName ?? context.name;
     delete options.fields[context.name];
-    const states = mapState(store, key);
-    console.log('store:', store);
-    console.log('key:', key);
-    console.log('states:', states);
-    console.log('states.json:', JSON.stringify(states));
-    options['computed'][key] = states[key];
+    const states = mapState(store, [key]);
+    options['computed'][context.name] = states[key];
   });
 }
 

@@ -23,14 +23,14 @@ import { mapStores } from 'pinia';
  */
 function Store(store) {
   return createDecorator((Class, instance, target, context, options) => {
-    if (context?.kind !== 'field') {
+    if (context.kind !== 'field') {
       throw new Error('The @Store decorator can only be used to decorate a class field.');
     }
     const realId = `${store.$id}Store`;
     const stores = mapStores(store);
     const key = context.name;
     delete options.fields[key];
-    options['computed'][key] = stores[realId];
+    options['computed'][context.name] = stores[realId];
   });
 }
 

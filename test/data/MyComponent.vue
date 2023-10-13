@@ -1,10 +1,24 @@
+<!------------------------------------------------------------------------------
+  -
+  -    Copyright (c) 2022 - 2023.
+  -    Haixing Hu, Qubit Co. Ltd.
+  -
+  -    All rights reserved.
+  -
+  ----------------------------------------------------------------------------->
 <template>
   <div class="my-component">
     <div>
+      Fruits:
+      <span id="fruits">
+        {{ fruits.join(',') }}
+      </span>
+    </div>
+    <div>
       All Fruits:
-      <ul id="all-fruits">
-        <li v-for="fruit in fruits" :key="fruit">{{ fruit }}</li>
-      </ul>
+      <span id="all-fruits">
+        {{ allFruits.join(',') }}
+      </span>
     </div>
     <div>
       Total Fruit Count:
@@ -12,14 +26,14 @@
     </div>
     <div>
       Selected Fruit:
-      <span id="selected-fruit">{{ selectedFruit }}</span>
+      <span id="selected-fruit">{{ selected }}</span>
     </div>
     <div>
       Count of Selected Fruit:
-      <span id="selected-fruit-count">{{ fruitCount(selectedFruit) }}</span>
+      <span id="selected-count">{{ fruitCount(selected) }}</span>
     </div>
     <div>
-      <input id="input-fruit" type="text" v-model="fruit" />
+      <input id="fruit" type="text" v-model="fruit" />
     </div>
     <div>
       <button
@@ -59,8 +73,14 @@ class MyComponent {
   @State(useBasketStore)
   fruits;
 
-  @WritableState(useBasketStore, 'selected')
-  selectedFruit;
+  @State(useBasketStore, 'fruits')
+  allFruits;
+
+  @WritableState(useBasketStore)
+  selected;
+
+  @WritableState(useBasketStore, 'fruits')
+  writableFruits;
 
   @Getter(useBasketStore)
   fruitCount;
