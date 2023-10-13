@@ -6,17 +6,16 @@
 [![CircleCI](https://dl.circleci.com/status-badge/img/gh/Haixing-Hu/pinia-decorator/tree/master.svg?style=shield)](https://dl.circleci.com/status-badge/redirect/gh/Haixing-Hu/pinia-decorator/tree/master)
 [![Coverage Status](https://coveralls.io/repos/github/Haixing-Hu/pinia-decorator/badge.svg?branch=master)](https://coveralls.io/github/Haixing-Hu/pinia-decorator?branch=master)
 
-Provides class fields decorators for [Pinia] and [vue3-class-component].
-
 [pinia-decorator] is a JavaScript library that simplifies the integration of 
-[Pinia] stores with [Vue 3 class-style components] implemented in
+[Pinia] stores with [Vue class-style components] using the
 [stage 3 proposal of JavaScript decorators]. In other words, it provides 
 functionality similar to the [vuex-class] and [pinia-class] library. 
 
-This library was inspired by [pinia-class] but with a few key differences:
+This library was inspired by [vuex-class] and [pinia-class] but with a few key differences:
 
 1. It is implemented in pure JavaScript and does not require TypeScript support.
-2. It supports the JavaScript-based class-style Vue components using [vue3-class-component], 
+2. It supports the [Vue 3].
+3. It supports the JavaScript-based class-style Vue components using [vue3-class-component], 
    while [pinia-class] primarily targets TypeScript-based class-style Vue 
    components using [vue-facing-decorator].
 
@@ -57,69 +56,69 @@ yarn add @haixing_hu/pinia-decorator
 
 ### <span id="state">`@State`</span>
 
-The `@State` decorator is used to inject read-only state from a [Pinia] store 
-into a Vue class-style component. It allows you to access and use the state 
-properties of the store within your component.
+The @State decorator is used to inject read-only state from a [Pinia] store 
+into [Vue class-style components]. It allows you to access and use the state 
+properties of the [Pinia] store within your component.
 
 The syntax of the `@State` decorator is as follows:
 ```js
-@State(store: Object, propertyName?: string)
+@State(store: Object, stateName?: string)
 ```
 
 - `store` (required): The injected [Pinia] store object defined using the
   `defineStore()` function from [Pinia].
-- `propertyName` (optional): The name of the injected state of the store. 
+- `stateName` (optional): The name of the injected state of the store. 
   If not provided, the decorator uses the decorated field name as the injected 
   state name.
 
 ### <span id="writable-state">`@WritableState`</span>
 
 The `@WritableState` decorator is similar to `@State`, but it allows you to 
-inject a writable state from a [Pinia] store into a Vue class-style component. 
+inject a writable state from a [Pinia] store into a [Vue class-style component]. 
 This means you can both read and modify the state properties.
 
 The syntax of the `@State` decorator is as follows:
 ```javascript
-@WritableState(store: Object, propertyName?: string)
+@WritableState(store: Object, stateName?: string)
 ```
 
 - `store` (required): The injected [Pinia] store object defined using the
   `defineStore()` function from [Pinia].
-- `propertyName` (optional): The name of the injected state of the store.
+- `stateName` (optional): The name of the injected state of the store.
   If not provided, the decorator uses the decorated field name as the injected
   state name.
 
 ### <span id="getter">`@Getter`</span>
 
 The `@Getter` decorator is used to inject a getter from a [Pinia] store into a 
-Vue class-style component. It allows you to call getter functions from the store 
-within your component.
+[Vue class-style component]. It allows you to call getter functions from the 
+store within your component.
 
 The syntax of the `@Getter` decorator is as follows:
 ```javascript
-@Getter(store: Object, propertyName?: string)
+@Getter(store: Object, getterName?: string)
 ```
 
 - `store` (required): The injected [Pinia] store object defined using the
   `defineStore()` function from [Pinia].
-- `propertyName` (optional): The name of the injected getter of the store.
+- `getterName` (optional): The name of the injected getter of the store.
   If not provided, the decorator uses the decorated field name as the injected
   getter name.
 
 ### <span id="action">`@Action`</span>
 
 The `@Action` decorator is used to inject an action from a [Pinia] store into a 
-Vue class-style component. It allows you to call action functions from the store 
+[Vue class-style component]. It allows you to call action functions from the store 
 within your component.
 
 The syntax of the `@Action` decorator is as follows:
 ```javascript
-@Action(store: Object, propertyName?: string)
+@Action(store: Object, actionName?: string)
 ```
 
 - `store` (required): The injected [Pinia] store object defined using the
   `defineStore()` function from [Pinia].
-- `propertyName` (optional): The name of the injected action of the store.
+- `actionName` (optional): The name of the injected action of the store.
   If not provided, the decorator uses the decorated field name as the injected
   action name.
 
@@ -196,7 +195,8 @@ See the [LICENSE](LICENSE) file for more details.
 [Pinia]: https://pinia.vuejs.org/
 [Vue]: https://vuejs.org/
 [Vue 3]: https://vuejs.org/
-[Vue 3 class-style components]: https://npmjs.com/package/@haixing_hu/vue3-class-component
+[Vue class-style components]: https://npmjs.com/package/@haixing_hu/vue3-class-component
+[Vue class-style component]: https://npmjs.com/package/@haixing_hu/vue3-class-component
 [vue3-class-component]: https://npmjs.com/package/@haixing_hu/vue3-class-component
 [stage 3 proposal of JavaScript decorators]: https://github.com/tc39/proposal-decorators
 [vuex-class]: https://github.com/ktsn/vuex-class
