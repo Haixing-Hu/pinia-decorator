@@ -179,6 +179,10 @@ export class MyComponent extends Vue {
 export default toVue(MyComponent);
 ```
 
+For more details, check the following demo projects:
+- [The demo project using vite](https://github.com/haixing-hu/pinia-decorator-demo-vite)
+- [The demo project using webpack](https://github.com/haixing-hu/pinia-decorator-demo-webpack)
+
 ## <span id="contributing">Contributing</span>
 
 If you find any issues or have suggestions for improvements, please feel free

@@ -168,6 +168,11 @@ export class MyComponent extends Vue {
 export default toVue(MyComponent);
 ```
 
+有关更多详细信息，请查看以下演示项目：
+
+- [使用 vite 的演示项目](https://github.com/haixing-hu/pinia-decorator-demo-vite)
+- [使用 webpack 的演示项目](https://github.com/haixing-hu/pinia-decorator-demo-webpack)
+
 ## <span id="contributing">贡献</span>
 
 如果你发现任何问题或有改进建议，请随时在 [GitHub 仓库] 中提出问题或提交请求。
