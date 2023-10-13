@@ -1745,7 +1745,7 @@ __metadata:
     vitest: ^0.34.6
     vue: ^3.3.4
   peerDependencies:
-    "@haixing_hu/vue3-class-component": ^1.1.0
+    "@haixing_hu/vue3-class-component": ^1.1.4
     pinia: ^2.0.0
     vue: ^3.0.0
   languageName: unknown
