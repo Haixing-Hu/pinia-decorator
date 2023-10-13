@@ -1,29 +1,36 @@
 version: 2.1
 orbs:
   node: circleci/node@5.1.0
+  coveralls: coveralls/coveralls@2.2.1
 
 jobs:
-  build:
+  test_and_build:
     executor:
       name: node/default
       tag: 20.8.0
-      resource_class: small
+      resource_class: medium
     steps:
       - checkout
       - node/install-packages:
           pkg-manager: yarn
           with-cache: true
       - run:
-          name: Lint
+          name: Lint Source Code
           command: yarn lint
+      - run:
+          name: Test the library
+          command: yarn test
       - run:
           name: Build the library
           command: yarn build
+      - coveralls/upload:
+          coverage_format: clover
+          coverage_file: coverage/clover.xml
 
 workflows:
   build_workflow:
     jobs:
-      - build:
+      - test_and_build:
           filters:
             branches:
               only: master
