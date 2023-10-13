@@ -26,13 +26,13 @@ import { mapWritableState } from 'pinia';
  */
 function WritableState(store, stateName = undefined) {
   return createDecorator((Class, instance, target, context, options) => {
-    if (context?.kind !== 'field') {
+    if (context.kind !== 'field') {
       throw new Error('The @WritableState decorator can only be used to decorate a class field.');
     }
     const key = stateName ?? context.name;
     delete options.fields[context.name];
-    const states = mapWritableState(store, key);
-    options['computed'][key] = states[key];
+    const states = mapWritableState(store, [key]);
+    options['computed'][context.name] = states[key];
   });
 }
 

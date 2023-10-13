@@ -34,7 +34,7 @@
   "scripts": {
     "clean": "rm -rvf dist",
     "lint": "eslint ./src",
-    "test": "vitest",
+    "test": "vitest run --coverage",
     "build": "cross-env NODE_ENV=production node esbuild.mjs",
     "build:dev": "cross-env NODE_ENV=development node esbuild.mjs",
     "deploy": "yarn && yarn lint && yarn build:dev && yarn build && npm publish --registry='https://registry.npmjs.com/' --access public"
@@ -53,8 +53,9 @@
     "@babel/runtime": "^7.23.2",
     "@haixing_hu/eslint-config": "^1.2.0",
     "@haixing_hu/vite-plugin-babel": "^1.3.1",
-    "@haixing_hu/vue3-class-component": "^1.1.3",
+    "@haixing_hu/vue3-class-component": "^1.1.4",
     "@vitejs/plugin-vue": "^4.4.0",
+    "@vitest/coverage-istanbul": "^0.34.6",
     "@vue/compiler-dom": "^3.3.4",
     "@vue/server-renderer": "^3.3.4",
     "@vue/test-utils": "^2.4.1",

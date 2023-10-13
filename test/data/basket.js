@@ -23,8 +23,8 @@ const selectFruitSpy = vi.fn(function (fruit) {
 
 const useBasketStore = defineStore('basket', {
   state: () => ({
-    fruits: ['🍍', '🍎', '🍇', '🍋'],
-    selected: '',
+    fruits: ['🍍', '🍎', '🍇', '🍋', '🍎'],
+    selected: '🍎',
   }),
   getters: {
     fruitCount: (state) => (fruit) =>

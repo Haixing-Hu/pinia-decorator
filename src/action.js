@@ -26,13 +26,12 @@ import { mapActions } from 'pinia';
  */
 function Action(store, actionName = undefined) {
   return createDecorator((Class, instance, target, context, options) => {
-    if (context?.kind !== 'field') {
+    if (context.kind !== 'field') {
       throw new Error('The @Action decorator can only be used to decorate a class field.');
     }
     const key = actionName ?? context.name;
-    delete options.fields[context.name];
-    const actions = mapActions(store, key);
-    options['computed'][key] = actions[key];
+    const actions = mapActions(store, [key]);
+    options['methods'][context.name] = actions[key];
   });
 }
 
