@@ -33,6 +33,7 @@ describe('Test @WritableState', () => {
     const selected = wrapper.get('#selected-fruit');
     expect(selected.text()).toBe('🍎');
   });
+
   it('map state with field name should be writable', async () => {
     const wrapper = mount(MyComponent);
     const vm = wrapper.vm;
@@ -42,11 +43,13 @@ describe('Test @WritableState', () => {
     const selected = wrapper.get('#selected-fruit');
     expect(selected.text()).toBe('🍍');
   });
+
   it('should map state with the specified name', async () => {
     const wrapper = mount(MyComponent);
     const vm = wrapper.vm;
     expect(vm.writableFruits).toStrictEqual(['🍍', '🍎', '🍇', '🍋', '🍎']);
   });
+
   it('map state with the specified name should be writable', async () => {
     const wrapper = mount(MyComponent);
     const vm = wrapper.vm;
@@ -56,6 +59,24 @@ describe('Test @WritableState', () => {
     const allFruits = wrapper.get('#all-fruits');
     expect(allFruits.text()).toBe('🍍,🍎,🍇,🍋,🍎,🍍');
   });
+
+  it('writable state could be modified by trigger', async () => {
+    const wrapper = mount(MyComponent);
+    const vm = wrapper.vm;
+    const selected = wrapper.get('#selected-fruit');
+    expect(vm.selected).toBe('🍎');
+    expect(selected.text()).toBe('🍎');
+    const input = wrapper.get('#fruit');
+    await input.setValue('🍇');
+    await nextTick();
+    expect(vm.fruit).toBe('🍇');
+    const button = wrapper.get('#change-select-fruit');
+    await button.trigger('click');
+    expect(vm.selected).toBe('🍇');
+    await nextTick();
+    expect(selected.text()).toBe('🍇');
+  });
+
   it('should throw error if not decorated on a class field', () => {
     expect(() => {
       @Component

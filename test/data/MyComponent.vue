@@ -109,7 +109,7 @@ class MyComponent {
 
   onChangeFruitClicked() {
     const list = this.fruit.split(',');
-    this.selectedFruit = list[0];
+    this.selected = list[0];
   }
 
   onAddFruitClicked() {
