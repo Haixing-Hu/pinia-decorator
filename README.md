@@ -201,4 +201,5 @@ See the [LICENSE](LICENSE) file for more details.
 [stage 3 proposal of JavaScript decorators]: https://github.com/tc39/proposal-decorators
 [vuex-class]: https://github.com/ktsn/vuex-class
 [pinia-class]: https://github.com/jquagliatini/pinia-class
+[vue-facing-decorator]: https://github.com/facing-dev/vue-facing-decorator
 [GitHub repository]: https://github.com/Haixing-Hu/pinia-decorator

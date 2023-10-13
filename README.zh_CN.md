@@ -190,4 +190,5 @@ export default toVue(MyComponent);
 [JavaScript 装饰器的第三阶段提案]: https://github.com/tc39/proposal-decorators
 [vuex-class]: https://github.com/ktsn/vuex-class
 [pinia-class]: https://github.com/jquagliatini/pinia-class
+[vue-facing-decorator]: https://github.com/facing-dev/vue-facing-decorator
 [GitHub 仓库]: https://github.com/Haixing-Hu/pinia-decorator
