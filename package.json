@@ -37,7 +37,7 @@
     "test": "vitest run --coverage",
     "build": "cross-env NODE_ENV=production node esbuild.mjs",
     "build:dev": "cross-env NODE_ENV=development node esbuild.mjs",
-    "deploy": "yarn && yarn lint && yarn build:dev && yarn build && npm publish --registry='https://registry.npmjs.com/' --access public"
+    "deploy": "yarn && yarn lint && yarn test && yarn build:dev && yarn build && npm publish --registry='https://registry.npmjs.com/' --access public"
   },
   "peerDependencies": {
     "@haixing_hu/vue3-class-component": "^1.1.0",
