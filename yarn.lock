@@ -1728,7 +1728,7 @@ __metadata:
     "@babel/preset-env": ^7.23.2
     "@babel/runtime": ^7.23.2
     "@haixing_hu/eslint-config": ^1.2.0
-    "@haixing_hu/vite-plugin-babel": ^1.3.1
+    "@haixing_hu/vite-plugin-babel": ^1.5.0
     "@haixing_hu/vue3-class-component": ^1.1.4
     "@vitejs/plugin-vue": ^4.4.0
     "@vitest/coverage-istanbul": ^0.34.6
@@ -1751,12 +1751,12 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@haixing_hu/vite-plugin-babel@npm:^1.3.1":
-  version: 1.3.1
-  resolution: "@haixing_hu/vite-plugin-babel@npm:1.3.1"
+"@haixing_hu/vite-plugin-babel@npm:^1.5.0":
+  version: 1.5.0
+  resolution: "@haixing_hu/vite-plugin-babel@npm:1.5.0"
   dependencies:
     "@babel/core": ^7.0.0
-  checksum: 03cc8d659ebe53d59841e379d8108a9c7d471359df9cf1da663fec1eaf3fc8e444f469515c3b56060aa17b9209d2d6f469968e56be9d72e2e203814b9ecda8a4
+  checksum: d2c7291ed3455e33108616edb9fbba479db0565b9ef4458e5f52c70eb89b0b0247d6f42068e612f675ec122831edfad8b78156dfd2175066bfd85ed71a1db1f0
   languageName: node
   linkType: hard
 
