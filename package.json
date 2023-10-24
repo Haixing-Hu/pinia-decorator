@@ -1,6 +1,6 @@
 {
   "name": "@haixing_hu/pinia-decorator",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Provides class fields decorators for Pinia and vue3-class-component.",
   "author": "Haixing Hu",
   "license": "Apache-2.0",
@@ -32,7 +32,8 @@
     "dist",
     "doc",
     "LICENSE",
-    "README.md"
+    "README.md",
+    "README.zh_CN.md"
   ],
   "scripts": {
     "clean": "rm -rvf dist doc",
