@@ -8,4 +8,4 @@
 ////////////////////////////////////////////////////////////////////////////////
 import rollupBuilder from '@haixing_hu/rollup-builder';
 
-export default rollupBuilder('VueClassComponent', import.meta.url);
+export default rollupBuilder('PiniaDecorator', import.meta.url);
