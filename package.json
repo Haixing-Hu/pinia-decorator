@@ -1,6 +1,6 @@
 {
   "name": "@haixing_hu/pinia-decorator",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "Provides class fields decorators for Pinia and vue3-class-component.",
   "author": "Haixing Hu",
   "license": "Apache-2.0",
@@ -20,12 +20,12 @@
     "class style",
     "decorator"
   ],
-  "main": "dist/pinia-decorator.cjs.js",
-  "module": "dist/pinia-decorator.esm.mjs",
+  "main": "dist/pinia-decorator.cjs.min.js",
+  "module": "dist/pinia-decorator.esm.min.mjs",
   "exports": {
     ".": {
-      "require": "./dist/pinia-decorator.cjs.js",
-      "import": "./dist/pinia-decorator.esm.mjs"
+      "require": "./dist/pinia-decorator.cjs.min.js",
+      "import": "./dist/pinia-decorator.esm.min.mjs"
     }
   },
   "scripts": {
