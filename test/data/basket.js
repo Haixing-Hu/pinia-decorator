@@ -7,7 +7,7 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 import { defineStore } from 'pinia';
-import { vi } from "vitest";
+import { vi } from 'vitest';
 
 const addFruitSpy = vi.fn(function (fruit) {
   this.fruits.push(fruit);
@@ -27,8 +27,7 @@ const useBasketStore = defineStore('basket', {
     selected: '🍎',
   }),
   getters: {
-    fruitCount: (state) => (fruit) =>
-        state.fruits.filter((f) => f === fruit).length,
+    fruitCount: (state) => (fruit) => state.fruits.filter((f) => f === fruit).length,
     count: (state) => state.fruits.length,
   },
   actions: {

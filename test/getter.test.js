@@ -28,11 +28,11 @@ describe('Test @Getter', () => {
   it('should map getter with field name', () => {
     const wrapper = mount(MyComponent);
     const vm = wrapper.vm;
-    const appleCount = vm.fruitCount('🍎')
+    const appleCount = vm.fruitCount('🍎');
     expect(appleCount).toBe(2);
     const selectedCount = wrapper.get('#selected-count');
     expect(selectedCount.text()).toBe('2');
-    const pineappleCount = vm.fruitCount('🍍')
+    const pineappleCount = vm.fruitCount('🍍');
     expect(pineappleCount).toBe(1);
     vm.selected = '🍍';
     expect(selectedCount.text()).toBe('2');
