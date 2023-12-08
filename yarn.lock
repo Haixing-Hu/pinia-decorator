@@ -1794,9 +1794,9 @@ __metadata:
     "@babel/runtime": ^7.23.2
     "@haixing_hu/eslint-config": ^1.3.1
     "@haixing_hu/jsdoc-minami": ^1.5.1
-    "@haixing_hu/rollup-builder": ^1.3.0
+    "@haixing_hu/rollup-builder": ^1.5.0
     "@haixing_hu/vite-plugin-babel": ^1.5.0
-    "@haixing_hu/vue3-class-component": ^1.3.3
+    "@haixing_hu/vue3-class-component": ^1.5.1
     "@jest/core": ^29.7.0
     "@rollup/plugin-alias": ^5.0.1
     "@rollup/plugin-babel": ^6.0.4
@@ -1831,15 +1831,15 @@ __metadata:
     vue: ^3.3.4
   peerDependencies:
     "@babel/runtime": ^7.23.2
-    "@haixing_hu/vue3-class-component": ^1.3.3
+    "@haixing_hu/vue3-class-component": ^1.5.1
     pinia: ^2.0.0
     vue: ^3.0.0
   languageName: unknown
   linkType: soft
 
-"@haixing_hu/rollup-builder@npm:^1.3.0":
-  version: 1.3.0
-  resolution: "@haixing_hu/rollup-builder@npm:1.3.0"
+"@haixing_hu/rollup-builder@npm:^1.5.0":
+  version: 1.5.0
+  resolution: "@haixing_hu/rollup-builder@npm:1.5.0"
   peerDependencies:
     "@babel/core": ^7.23.2
     "@babel/plugin-transform-runtime": ^7.23.2
@@ -1851,7 +1851,7 @@ __metadata:
     "@rollup/plugin-terser": ^0.4.4
     rollup: ^4.1.4
     rollup-plugin-analyzer: ^4.0.0
-  checksum: 007efa9a3da2a5abb8a38278f9a333faef213e2545799d7ce43ccc34f3da502da93c4da4c857a305af6e0093bcfda012d95b51b2dfdd681030533e568d90bf3d
+  checksum: 06633ffb003d01fa37268ed4161c12e00c16601d07ef3bdba506f1ffa6fb0cedbd95437cad80ac70317fa815effb968f8f70e0eafe431a8e1897fcafdae107c6
   languageName: node
   linkType: hard
 
@@ -1864,13 +1864,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@haixing_hu/vue3-class-component@npm:^1.3.3":
-  version: 1.3.3
-  resolution: "@haixing_hu/vue3-class-component@npm:1.3.3"
+"@haixing_hu/vue3-class-component@npm:^1.5.1":
+  version: 1.5.1
+  resolution: "@haixing_hu/vue3-class-component@npm:1.5.1"
   peerDependencies:
     "@babel/runtime": ^7.23.2
     vue: ^3.3.4
-  checksum: ef0ff3c1786bb644419e05d4bdc9b3cdbf48d83116874afb16243633ab02b3f0dc64b1842643f0d0f60531716cc6b68959a4be55ec6419b3d6f7b36ff19bfada
+  checksum: 0d5f074502e684dfd3579f4b8fe768adf43dfcb5d35486eb0cf52faa2b3b2931f66d46f51ce825b967b9e76e17856d529ab87b744a07d0b514c5593350eb4b28
   languageName: node
   linkType: hard
 

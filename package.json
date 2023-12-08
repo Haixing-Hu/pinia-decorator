@@ -1,6 +1,6 @@
 {
   "name": "@haixing_hu/pinia-decorator",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "Provides class fields decorators for Pinia and vue3-class-component.",
   "author": "Haixing Hu",
   "license": "Apache-2.0",
@@ -40,7 +40,7 @@
   },
   "peerDependencies": {
     "@babel/runtime": "^7.23.2",
-    "@haixing_hu/vue3-class-component": "^1.3.3",
+    "@haixing_hu/vue3-class-component": "^1.5.1",
     "pinia": "^2.0.0",
     "vue": "^3.0.0"
   },
@@ -54,9 +54,9 @@
     "@babel/runtime": "^7.23.2",
     "@haixing_hu/eslint-config": "^1.3.1",
     "@haixing_hu/jsdoc-minami": "^1.5.1",
-    "@haixing_hu/rollup-builder": "^1.3.0",
+    "@haixing_hu/rollup-builder": "^1.5.0",
     "@haixing_hu/vite-plugin-babel": "^1.5.0",
-    "@haixing_hu/vue3-class-component": "^1.3.3",
+    "@haixing_hu/vue3-class-component": "^1.5.1",
     "@jest/core": "^29.7.0",
     "@rollup/plugin-alias": "^5.0.1",
     "@rollup/plugin-babel": "^6.0.4",
