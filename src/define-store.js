@@ -32,7 +32,7 @@ import { defineStore } from 'pinia';
  *
  *  birthday = '';
  *
- *  getter age() {
+ *  get age() {
  *    return dayjs().diff(this.birthday, 'year');
  *  }
  *
@@ -41,16 +41,54 @@ import { defineStore } from 'pinia';
  *  }
  *
  *  updatePassword(password) {
- *    ...
+ *    this.password = newPassword;
+ *    return api.updatePassword(this.username, newPassword);
  *  }
  *
  *  login() {
- *    ...
+ *    return api.login(this.username, this.password);
  *  }
  * }
  *
  * export default UserStore;
  * ```
+ *
+ * The above example is equivalent to the following code:
+ *
+ * ```javascript
+ * import { defineStore } from 'pinia';
+ *
+ * const useUserStore = defineStore('user', {
+ *   state: () => ({
+ *     id: '',
+ *     username: '',
+ *     password: '',
+ *     nickname: '',
+ *     avatar: '',
+ *     birthday: '',
+ *   }),
+ *
+ *   getters: {
+ *     age: (state) => dayjs().diff(state.birthday, 'year'),
+ *   },
+ *
+ *   actions: {
+ *     setAvatar(avatar) {
+ *       this.avatar = avatar;
+ *     },
+ *     updatePassword(newPassword) {
+ *       this.password = newPassword;
+ *       return api.updatePassword(this.username, newPassword);
+ *     },
+ *     login() {
+ *       return api.login(this.username, this.password);
+ *     },
+ *   },
+ * });
+ *
+ * export default useUserStore;
+ * ```
+ *
  * We can use the `user` store in the Vue components as follows:
  * ```vue
  * <template>
@@ -65,23 +103,23 @@ import { defineStore } from 'pinia';
  * <script>
  * import { Component, toVue } from '@haixing_hu/vue3-class-component';
  * import { State, Getter, Action } from '@haixing_hu/pinia-decorators';
- * import useUserStore from 'src/stores/user';
+ * import UserStore from 'src/stores/user';
  *
- * @Component
+ * &#064;Component
  * class UserPage {
- *   @State(useUserStore)
+ *   &#064;State(UserStore)
  *   username;
  *
- *   @State(useUserStore)
+ *   &#064;State(UserStore)
  *   avatar;
  *
- *   @Getter(useUserStore)
+ *   &#064;Getter(UserStore)
  *   age;
  *
- *   @Action(useUserStore)
+ *   &#064;Action(UserStore)
  *   updatePassword;
  *
- *   @Action(useUserStore)
+ *   &#064;Action(UserStore)
  *   login;
  * }
  *

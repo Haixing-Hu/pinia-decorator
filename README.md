@@ -18,6 +18,7 @@ This library was inspired by [vuex-class] and [pinia-class] but with a few key d
 3. It supports the JavaScript-based class-style Vue components using [vue3-class-component], 
    while [pinia-class] primarily targets TypeScript-based class-style Vue 
    components using [vue-facing-decorator].
+4. It provide the [`@DefineStore`](#define-store) decorator which decorates a class as a Pinia store.
 
 ## Table of Content
 
@@ -28,6 +29,7 @@ This library was inspired by [vuex-class] and [pinia-class] but with a few key d
   - [`@Getter`](#getter)
   - [`@Action`](#action)
   - [`@Store`](#store)
+  - [`@DefineStore`](#define-store)
 - [Example](#example)
 - [Contributing](#contributing)
 - [License](#license)
@@ -53,6 +55,7 @@ yarn add @haixing_hu/pinia-decorator
 - `@Getter`: Used to inject a getter from a [Pinia] store.
 - `@Action`: Used to inject an action from a [Pinia] store.
 - `@Store`: Used to inject the entire [Pinia] store.
+- `@DefineStore`: Used to decorate a class as a [Pinia] store.
 
 ### <span id="state">`@State`</span>
 
@@ -62,7 +65,7 @@ properties of the [Pinia] store within your component.
 
 The syntax of the `@State` decorator is as follows:
 ```js
-@State(store: Object, stateName?: string)
+@State(store: object, stateName?: string)
 ```
 
 - `store` (required): The injected [Pinia] store object defined using the
@@ -79,7 +82,7 @@ This means you can both read and modify the state properties.
 
 The syntax of the `@State` decorator is as follows:
 ```javascript
-@WritableState(store: Object, stateName?: string)
+@WritableState(store: object, stateName?: string)
 ```
 
 - `store` (required): The injected [Pinia] store object defined using the
@@ -96,7 +99,7 @@ store within your component.
 
 The syntax of the `@Getter` decorator is as follows:
 ```javascript
-@Getter(store: Object, getterName?: string)
+@Getter(store: object, getterName?: string)
 ```
 
 - `store` (required): The injected [Pinia] store object defined using the
@@ -113,7 +116,7 @@ within your component.
 
 The syntax of the `@Action` decorator is as follows:
 ```javascript
-@Action(store: Object, actionName?: string)
+@Action(store: object, actionName?: string)
 ```
 
 - `store` (required): The injected [Pinia] store object defined using the
@@ -130,11 +133,22 @@ actions of the store.
 
 The syntax of the `@Store` decorator is as follows:
 ```javascript
-@Store(store: Object)
+@Store(store: object)
 ```
 
-- `store` (required): The [Pinia] store object defined using the `defineStore()` 
-  function from Pinia.
+- `store` (required): The function creating a [Pinia] store object defined with 
+  the `defineStore()` function from Pinia.
+
+### <span id="define-store">`@DefineStore`</span>
+
+The `@DefineStore` decorator is used to decorate a class as a [Pinia] store.
+
+The syntax of the `@DefineStore` decorator is as follows:
+```javascript
+@DefineStore(storeId: string)
+```
+
+- `storeId` (required): The id of the store.
 
 ## <span id="example">Example</span>
 
@@ -182,6 +196,121 @@ export default toVue(MyComponent);
 For more details, check the following demo projects:
 - [The demo project using vite](https://github.com/haixing-hu/pinia-decorator-demo-vite)
 - [The demo project using webpack](https://github.com/haixing-hu/pinia-decorator-demo-webpack)
+
+Here is an example to define a Pinia store using the `@DefineStore` decorator:
+
+```javascript
+import { DefineStore } from '@haixing_hu/pinia-decorators';
+import dayjs from 'dayjs';
+
+@DefineStore('user')
+class UserStore {
+  id = '';
+
+  username = '';
+
+  password = '';
+
+  nickname = '';
+
+  avatar = '';
+
+  birthday = '';
+
+  get age() {
+    return dayjs().diff(this.birthday, 'year');
+  }
+
+  setAvatar(avatar) {
+    this.avatar = avatar;
+  }
+
+  updatePassword(password) {
+    this.password = newPassword;
+    return api.updatePassword(this.username, newPassword);
+  }
+
+  login() {
+    return api.login(this.username, this.password);
+  }
+}
+
+export default UserStore;
+```
+
+The above example defines a Pinia store named `user` which is equivalent to the following code:
+
+```javascript
+import { defineStore } from 'pinia';
+
+const useUserStore = defineStore('user', {
+  state: () => ({
+    id: '',
+    username: '',
+    password: '',
+    nickname: '',
+    avatar: '',
+    birthday: '',
+  }),
+  
+  getters: {
+    age: (state) => dayjs().diff(state.birthday, 'year'),
+  },
+  
+  actions: {
+    setAvatar(avatar) {
+      this.avatar = avatar;
+    },
+    updatePassword(newPassword) {
+      this.password = newPassword;
+      return api.updatePassword(this.username, newPassword);
+    },
+    login() {
+      return api.login(this.username, this.password);
+    },
+  },
+});
+
+export default useUserStore;
+```
+
+We can use the `user` store in the Vue components as follows:
+```vue
+<template>
+  <div>
+    <div>Username: {{ username }}</div>
+    <div>Age: {{ age }}</div>
+    <div>Avatar: <img :src="avatar" /></div>
+    <button @click="updatePassword('new-password')">Change Password</button>
+    <button @click="login()">Login</button>
+  </div>
+</template>
+<script>
+import { Component, toVue } from '@haixing_hu/vue3-class-component';
+import { State, Getter, Action } from '@haixing_hu/pinia-decorators';
+import UserStore from 'src/stores/user';
+
+@Component
+class UserPage {
+  @State(UserStore)
+  username;
+
+  @State(UserStore)
+  avatar;
+
+  @Getter(UserStore)
+  age;
+
+  @Action(UserStore)
+  updatePassword;
+
+  @Action(UserStore)
+  login;
+}
+
+export default toVue(UserPage);
+</script>
+```
 
 ## <span id="contributing">Contributing</span>
 

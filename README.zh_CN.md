@@ -16,6 +16,7 @@
 2. 它支持 [Vue 3]。
 3. 它支持使用 [vue3-class-component] 实现的 JavaScript 类风格 Vue 组件，
    而 [pinia-class] 主要针对使用 [vue-facing-decorator] 实现的 TypeScript 类风格 Vue 组件。
+4. 它支持使用 [`@DefineStore`](#define-store) 装饰器将一个类定义为 Pinia 存储。
 
 ## 目录
 
@@ -26,6 +27,7 @@
   - [`@Getter`](#getter)
   - [`@Action`](#action)
   - [`@Store`](#store)
+  - [`@DefineStore`](#define-store)
 - [示例](#example)
 - [贡献](#contributing)
 - [许可证](#license)
@@ -51,6 +53,7 @@ yarn add @haixing_hu/pinia-decorator
 - `@Getter`：用于将 getter 从 [Pinia] 存储注入到组件中。
 - `@Action`：用于将 action 从 [Pinia] 存储注入到组件中。
 - `@Store`：用于将整个 [Pinia] 存储注入到组件中。
+- `@DefineStore`：用于将一个类定义为 Pinia 存储。
 
 ### <span id="state">`@State`</span>
 
@@ -123,7 +126,19 @@ getter 和 action。
 @Store(store: Object)
 ```
 
-- `store`（必需）：使用 `Pinia` 的 `defineStore()` 函数定义的待注入的 [Pinia] 存储对象。
+- `store`（必需）：使用 `Pinia` 的 `defineStore()` 函数定义的待注入的 [Pinia] 存储对象的创建函数。
+
+### <span id="define-store">`@DefineStore`</span>
+
+`@DefineStore` 装饰器用于将一个类定义为 Pinia 存储。它允许你定义一个类，该类的实例将作为 Pinia 存储的实例。
+
+`@DefineStore` 装饰器的语法如下：
+
+```javascript
+@DefineStore(storeId: string)
+```
+
+- `storeId`（必需）：Pinia 存储的ID。
 
 ## <span id="example">示例</span>
 
@@ -172,6 +187,122 @@ export default toVue(MyComponent);
 
 - [使用 vite 的演示项目](https://github.com/haixing-hu/pinia-decorator-demo-vite)
 - [使用 webpack 的演示项目](https://github.com/haixing-hu/pinia-decorator-demo-webpack)
+
+下面是一个使用 `@DefineStore` 装饰器的示例：
+
+```javascript
+import { DefineStore } from '@haixing_hu/pinia-decorators';
+import dayjs from 'dayjs';
+
+@DefineStore('user')
+class UserStore {
+  id = '';
+
+  username = '';
+
+  password = '';
+
+  nickname = '';
+
+  avatar = '';
+
+  birthday = '';
+
+  get age() {
+    return dayjs().diff(this.birthday, 'year');
+  }
+
+  setAvatar(avatar) {
+    this.avatar = avatar;
+  }
+
+  updatePassword(password) {
+    this.password = newPassword;
+    return api.updatePassword(this.username, newPassword);
+  }
+
+  login() {
+    return api.login(this.username, this.password);
+  }
+}
+
+export default UserStore;
+```
+
+以上例子定义了一个名为 `user` 的 Pinia 存储，它等价于以下代码：
+
+```javascript
+import { defineStore } from 'pinia';
+
+const useUserStore = defineStore('user', {
+  state: () => ({
+    id: '',
+    username: '',
+    password: '',
+    nickname: '',
+    avatar: '',
+    birthday: '',
+  }),
+  
+  getters: {
+    age: (state) => dayjs().diff(state.birthday, 'year'),
+  },
+  
+  actions: {
+    setAvatar(avatar) {
+      this.avatar = avatar;
+    },
+    updatePassword(newPassword) {
+      this.password = newPassword;
+      return api.updatePassword(this.username, newPassword);
+    },
+    login() {
+      return api.login(this.username, this.password);
+    },
+  },
+});
+
+export default useUserStore;
+```
+
+我们可以按如下方式在 Vue 组件中使用 `UserStore`：
+
+```vue
+<template>
+  <div>
+    <div>Username: {{ username }}</div>
+    <div>Age: {{ age }}</div>
+    <div>Avatar: <img :src="avatar" /></div>
+    <button @click="updatePassword('new-password')">Change Password</button>
+    <button @click="login()">Login</button>
+  </div>
+</template>
+<script>
+import { Component, toVue } from '@haixing_hu/vue3-class-component';
+import { State, Getter, Action } from '@haixing_hu/pinia-decorators';
+import UserStore from 'src/stores/user';
+
+@Component
+class UserPage {
+  @State(UserStore)
+  username;
+
+  @State(UserStore)
+  avatar;
+
+  @Getter(UserStore)
+  age;
+
+  @Action(UserStore)
+  updatePassword;
+
+  @Action(UserStore)
+  login;
+}
+
+export default toVue(UserPage);
+</script>
+```
 
 ## <span id="contributing">贡献</span>
 
