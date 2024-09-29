@@ -1925,6 +1925,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@haixing_hu/logging@npm:^1.3.3":
+  version: 1.3.3
+  resolution: "@haixing_hu/logging@npm:1.3.3"
+  peerDependencies:
+    "@babel/runtime": ^7.23.0
+  checksum: 10c0/514825e0808f2d38d7c049b7093efd9b6001b3022d143e95c4e0e0af560b3b4f4dc6c3d19ded7ed4d82b8da50a77423d8e00b5ec3000abd6f6675e130e880264
+  languageName: node
+  linkType: hard
+
 "@haixing_hu/naming-style@npm:^1.3.0":
   version: 1.3.0
   resolution: "@haixing_hu/naming-style@npm:1.3.0"
@@ -1947,6 +1956,7 @@ __metadata:
     "@haixing_hu/clone": "npm:^1.7.2"
     "@haixing_hu/eslint-config": "npm:^1.3.3"
     "@haixing_hu/jsdoc-minami": "npm:^1.5.1"
+    "@haixing_hu/logging": "npm:^1.3.3"
     "@haixing_hu/naming-style": "npm:^1.3.0"
     "@haixing_hu/rollup-builder": "npm:^1.6.5"
     "@haixing_hu/type-detect": "npm:^1.1.0"

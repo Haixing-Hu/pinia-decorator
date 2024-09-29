@@ -8,7 +8,9 @@ import { Component } from '@haixing_hu/vue3-class-component';
 //
 ////////////////////////////////////////////////////////////////////////////////
 import { createPinia, setActivePinia } from 'pinia';
+import { Logger } from '@haixing_hu/logging';
 import { DefineStore } from '../src/index';
+import CustomizedAppender from './data/customized-appender';
 
 beforeEach(() => {
   setActivePinia(createPinia());
@@ -195,5 +197,92 @@ describe('DefineStore', () => {
     expect(store.$state.name).toBe('Hello');
     expect(store.$state.code).toBe('sub');
     expect(Object.getOwnPropertyNames(store.$state)).toEqual(['value', 'code', 'name']);
+  });
+
+  it('should support dynamic super class', () => {
+    function getBaseClass(logger) {
+      return class {
+        value = 42;
+
+        code = 'base';
+
+        constructor(value) {
+          this.value = value;
+        }
+
+        get doubleValue() {
+          return this.value * 2;
+        }
+
+        get fullName() {
+          throw new Error('should be overwrite by sub-classes');
+        }
+
+        increment() {
+          this.value += 1;
+        }
+
+        decrement() {
+          throw new Error('should be overwrite by sub-classes');
+        }
+
+        hello() {
+          logger.info('Hello World!');
+        }
+      };
+    }
+    const appender = new CustomizedAppender();
+    const logger = Logger.getLogger('TestLogger', { appender, level: 'TRACE' });
+
+    @DefineStore('test')
+    class TestStore extends getBaseClass(logger) {
+      name = 'Test';
+
+      code = 'sub';  // overwrite
+
+      constructor() {
+        super(100);
+        this.name = 'Hello';
+      }
+
+      get fullName() {
+        return `${this.name} Store`;
+      }
+
+      set foo(value) {
+        this.name += value;
+      }
+
+      decrement() {
+        this.value -= 1;
+      }
+    }
+
+    const store = TestStore();
+
+    expect(store.value).toBe(100);
+    expect(store.name).toBe('Hello');
+    expect(store.code).toBe('sub');
+    expect(store.doubleValue).toBe(200);
+    expect(store.fullName).toBe('Hello Store');
+    store.increment();
+    expect(store.value).toBe(101);
+    store.decrement();
+    expect(store.value).toBe(100);
+    expect(store.foo).toBeUndefined();
+
+    expect(store.$state.value).toBe(100);
+    expect(store.$state.name).toBe('Hello');
+    expect(store.$state.code).toBe('sub');
+    expect(Object.getOwnPropertyNames(store.$state)).toEqual(['value', 'code', 'name']);
+
+    expect(typeof store.hello).toBe('function');
+    store.hello();
+    expect(appender.logs.length).toBe(1);
+    expect(appender.logs[0].type).toBe('INFO');
+    expect(appender.logs[0].args).toEqual([
+      '[INFO] TestLogger - %s',
+      'Hello World!',
+    ]);
   });
 });

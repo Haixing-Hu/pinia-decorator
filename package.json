@@ -54,6 +54,7 @@
     "@haixing_hu/clone": "^1.7.2",
     "@haixing_hu/eslint-config": "^1.3.3",
     "@haixing_hu/jsdoc-minami": "^1.5.1",
+    "@haixing_hu/logging": "^1.3.3",
     "@haixing_hu/naming-style": "^1.3.0",
     "@haixing_hu/rollup-builder": "^1.6.5",
     "@haixing_hu/type-detect": "^1.1.0",
