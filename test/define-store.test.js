@@ -75,4 +75,52 @@ describe('DefineStore', () => {
     class TestStore {}
     expect(() => DefineStore('testStore')(TestStore, null)).toThrow(TypeError);
   });
+
+  it('should support class inheritance', () => {
+    class BaseStore {
+      value = 42;
+
+      get doubleValue() {
+        return this.value * 2;
+      }
+
+      get fullName() {
+        throw new Error('should be overwrite by sub-classes');
+      }
+
+      increment() {
+        this.value += 1;
+      }
+
+      decrement() {
+        throw new Error('should be overwrite by sub-classes');
+      }
+    }
+    @DefineStore('test')
+    class TestStore extends BaseStore {
+      name = 'Test';
+
+      get fullName() {
+        return `${this.name} Store`;
+      }
+
+      set foo(value) {
+        this.name += value;
+      }
+
+      decrement() {
+        this.value -= 1;
+      }
+    }
+    const store = TestStore();
+
+    expect(store.value).toBe(42);
+    expect(store.doubleValue).toBe(84);
+    expect(store.fullName).toBe('Test Store');
+    store.increment();
+    expect(store.value).toBe(43);
+    store.decrement();
+    expect(store.value).toBe(42);
+    expect(store.foo).toBeUndefined();
+  });
 });

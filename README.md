@@ -150,6 +150,8 @@ The syntax of the `@DefineStore` decorator is as follows:
 
 - `storeId` (required): The id of the store.
 
+Note that the `@DefineStore` also support the inheritance of the store class.
+
 ## <span id="example">Example</span>
 
 Here's a simple example of how to use these decorators in your Vue component:
@@ -197,22 +199,37 @@ For more details, check the following demo projects:
 - [The demo project using vite](https://github.com/haixing-hu/pinia-decorator-demo-vite)
 - [The demo project using webpack](https://github.com/haixing-hu/pinia-decorator-demo-webpack)
 
-Here is an example to define a Pinia store using the `@DefineStore` decorator:
+Here is an example to define a Pinia store using the `@DefineStore` decorator.
+Note that the `@DefineStore` also support the inheritance of the store class.
 
 ```javascript
 import { DefineStore } from '@haixing_hu/pinia-decorators';
 import dayjs from 'dayjs';
 
-@DefineStore('user')
-class UserStore {
+class BaseUserStore {
   id = '';
 
   username = '';
 
   password = '';
-
+  
   nickname = '';
 
+  get age() {
+    throw new Error('Should be override by subclass');
+  }
+  
+  setNickname(nickname) {
+    this.nickname = nickname;
+  }
+
+  login() {
+    throw new Error('Should be override by subclass');
+  }
+}
+
+@DefineStore('user')
+class UserStore extends BaseUserStore {   // support inheritance of the store class
   avatar = '';
 
   birthday = '';
@@ -258,6 +275,9 @@ const useUserStore = defineStore('user', {
   },
   
   actions: {
+    setNickname(nickname) {
+      this.nickname = nickname;
+    },
     setAvatar(avatar) {
       this.avatar = avatar;
     },
@@ -281,6 +301,7 @@ We can use the `user` store in the Vue components as follows:
     <div>Username: {{ username }}</div>
     <div>Age: {{ age }}</div>
     <div>Avatar: <img :src="avatar" /></div>
+    <button @click="setNickname('new-nickname')">Set Nickname</button>
     <button @click="updatePassword('new-password')">Change Password</button>
     <button @click="login()">Login</button>
   </div>
@@ -301,6 +322,9 @@ class UserPage {
   @Getter(UserStore)
   age;
 
+  @Action(UserStore)
+  setNickname;
+  
   @Action(UserStore)
   updatePassword;
 

@@ -13,21 +13,37 @@ import { defineStore } from 'pinia';
  *
  * This decorator should be used to decorate a class field.
  *
- * For example, the following code defines a Pinia store named `user`:
+ * For example, the following code defines a Pinia store named `user`.
+ * Note that the `@DefineStore` also support the inheritance of the store class.
+ *
  * ```js
  * import { DefineStore } from '@haixing_hu/pinia-decorators';
  * import dayjs from 'dayjs';
  *
+ * class BaseUserStore {
+ *   id = '';
+ *
+ *   username = '';
+ *
+ *   password = '';
+ *
+ *   nickname = '';
+ *
+ *   get age() {
+ *     throw new Error('Should be override by subclass');
+ *   }
+ *
+ *   setNickname(nickname) {
+ *     this.nickname = nickname;
+ *   }
+ *
+ *   login() {
+ *     throw new Error('Should be override by subclass');
+ *   }
+ * }
+ *
  * &#064;DefineStore('user')
- * class UserStore {
- *  id = '';
- *
- *  username = '';
- *
- *  password = '';
- *
- *  nickname = '';
- *
+ * class UserStore extends BaseUserStore {   // support inheritance of the store class
  *  avatar = '';
  *
  *  birthday = '';
@@ -73,6 +89,9 @@ import { defineStore } from 'pinia';
  *   },
  *
  *   actions: {
+ *     setNickname(nickname) {
+ *       this.nickname = nickname;
+ *     },
  *     setAvatar(avatar) {
  *       this.avatar = avatar;
  *     },
@@ -96,6 +115,7 @@ import { defineStore } from 'pinia';
  *     <div>Username: {{ username }}</div>
  *     <div>Age: {{ age }}</div>
  *     <div>Avatar: <img :src="avatar" /></div>
+ *     <button @click="setNickname('new-nickname')">Set Nickname</button>
  *     <button @click="updatePassword('new-password')">Change Password</button>
  *     <button @click="login()">Login</button>
  *   </div>
@@ -115,6 +135,9 @@ import { defineStore } from 'pinia';
  *
  *   &#064;Getter(UserStore)
  *   age;
+ *
+ *   &#064;Action(UserStore)
+ *   setNickname;
  *
  *   &#064;Action(UserStore)
  *   updatePassword;
@@ -144,28 +167,44 @@ function DefineStore(storeId) {
       const instance = new Class();
       // Gets all fields of the instance as the state object of the store.
       const stateObj = {};
-      for (const key of Object.getOwnPropertyNames(instance)) {
-        stateObj[key] = instance[key];
+      let proto = instance;
+      // Traverses the prototype chain to get all properties.
+      while (proto !== Object.prototype) {
+        Object.getOwnPropertyNames(proto).forEach((key) => {
+          if ((typeof instance[key] !== 'function')
+              && !Object.prototype.hasOwnProperty.call(stateObj, key)) {
+            stateObj[key] = instance[key];
+          }
+        });
+        proto = Object.getPrototypeOf(proto);
       }
       return stateObj;
     };
     const getters = {};
     const actions = {};
-    // Gets the prototype of the class.
-    const proto = Class.prototype;
-    const propertyNames = Object.getOwnPropertyNames(proto);
-    // Traverses the prototype object of the class, and processes the getters
-    // and methods respectively.
-    propertyNames.forEach((key) => {
-      const descriptor = Object.getOwnPropertyDescriptor(proto, key);
-      if (descriptor.get) {
-        // Adds the getter to the `getters` object of the store.
-        getters[key] = (state) => descriptor.get.call(state);
-      } else if ((typeof descriptor.value === 'function') && (key !== 'constructor')) {
-        // Adds the method to the `methods` object of the store.
-        actions[key] = descriptor.value;
-      }
-    });
+    // Traverses the prototype chain to get all getters and methods.
+    let proto = Class.prototype;
+    while (proto !== Object.prototype) {
+      const currentProto = proto;
+      Object.getOwnPropertyNames(proto).forEach((key) => {
+        if (key === 'constructor') {
+          return;
+        }
+        const descriptor = Object.getOwnPropertyDescriptor(currentProto, key);
+        if (descriptor.get) {
+          if (!Object.prototype.hasOwnProperty.call(getters, key)) {
+            // the getter of the class is treated as a getter of the store
+            getters[key] = (state) => descriptor.get.call(state);
+          }
+        } else if (typeof descriptor.value === 'function') {
+          if (!Object.prototype.hasOwnProperty.call(actions, key)) {
+            // the method of the class is treated as an action of the store
+            actions[key] = descriptor.value;
+          }
+        }
+      });
+      proto = Object.getPrototypeOf(proto);
+    }
     // Creates a store using the `defineStore` function of Pinia.
     return defineStore(storeId, { state, getters, actions });
   };
