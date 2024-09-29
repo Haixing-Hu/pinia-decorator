@@ -115,6 +115,7 @@ describe('DefineStore', () => {
     const store = TestStore();
 
     expect(store.value).toBe(42);
+    expect(store.name).toBe('Test');
     expect(store.doubleValue).toBe(84);
     expect(store.fullName).toBe('Test Store');
     store.increment();
@@ -122,5 +123,77 @@ describe('DefineStore', () => {
     store.decrement();
     expect(store.value).toBe(42);
     expect(store.foo).toBeUndefined();
+
+    expect(store.$state.value).toBe(42);
+    expect(store.$state.name).toBe('Test');
+    expect(Object.getOwnPropertyNames(store.$state)).toEqual(['value', 'name']);
+  });
+
+  it('should support initialization of properties in the constructor', () => {
+    class BaseStore {
+      value = 42;
+
+      code = 'base';
+
+      constructor(value) {
+        this.value = value;
+      }
+
+      get doubleValue() {
+        return this.value * 2;
+      }
+
+      get fullName() {
+        throw new Error('should be overwrite by sub-classes');
+      }
+
+      increment() {
+        this.value += 1;
+      }
+
+      decrement() {
+        throw new Error('should be overwrite by sub-classes');
+      }
+    }
+    @DefineStore('test')
+    class TestStore extends BaseStore {
+      name = 'Test';
+
+      code = 'sub';  // overwrite
+
+      constructor() {
+        super(100);
+        this.name = 'Hello';
+      }
+
+      get fullName() {
+        return `${this.name} Store`;
+      }
+
+      set foo(value) {
+        this.name += value;
+      }
+
+      decrement() {
+        this.value -= 1;
+      }
+    }
+    const store = TestStore();
+
+    expect(store.value).toBe(100);
+    expect(store.name).toBe('Hello');
+    expect(store.code).toBe('sub');
+    expect(store.doubleValue).toBe(200);
+    expect(store.fullName).toBe('Hello Store');
+    store.increment();
+    expect(store.value).toBe(101);
+    store.decrement();
+    expect(store.value).toBe(100);
+    expect(store.foo).toBeUndefined();
+
+    expect(store.$state.value).toBe(100);
+    expect(store.$state.name).toBe('Hello');
+    expect(store.$state.code).toBe('sub');
+    expect(Object.getOwnPropertyNames(store.$state)).toEqual(['value', 'code', 'name']);
   });
 });

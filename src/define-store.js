@@ -167,17 +167,9 @@ function DefineStore(storeId) {
       const instance = new Class();
       // Gets all fields of the instance as the state object of the store.
       const stateObj = {};
-      let proto = instance;
-      // Traverses the prototype chain to get all properties.
-      while (proto !== Object.prototype) {
-        Object.getOwnPropertyNames(proto).forEach((key) => {
-          if ((typeof instance[key] !== 'function')
-              && !Object.prototype.hasOwnProperty.call(stateObj, key)) {
-            stateObj[key] = instance[key];
-          }
-        });
-        proto = Object.getPrototypeOf(proto);
-      }
+      Object.getOwnPropertyNames(instance).forEach((key) => {
+        stateObj[key] = instance[key];
+      });
       return stateObj;
     };
     const getters = {};
@@ -186,7 +178,7 @@ function DefineStore(storeId) {
     let proto = Class.prototype;
     while (proto !== Object.prototype) {
       const currentProto = proto;
-      Object.getOwnPropertyNames(proto).forEach((key) => {
+      Object.getOwnPropertyNames(currentProto).forEach((key) => {
         if (key === 'constructor') {
           return;
         }
@@ -203,7 +195,7 @@ function DefineStore(storeId) {
           }
         }
       });
-      proto = Object.getPrototypeOf(proto);
+      proto = Object.getPrototypeOf(currentProto);
     }
     // Creates a store using the `defineStore` function of Pinia.
     return defineStore(storeId, { state, getters, actions });
