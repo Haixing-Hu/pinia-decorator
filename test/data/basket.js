@@ -7,17 +7,16 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 import { defineStore } from 'pinia';
-import { vi } from 'vitest';
 
-const addFruitSpy = vi.fn(function (fruit) {
+const addFruitSpy = jest.fn(function addFruit(fruit) {
   this.fruits.push(fruit);
 });
 
-const addFruitsSpy = vi.fn(function (fruits) {
+const addFruitsSpy = jest.fn(function addFruits(fruits) {
   this.fruits.push(...fruits);
 });
 
-const selectFruitSpy = vi.fn(function (fruit) {
+const selectFruitSpy = jest.fn(function selectFruit(fruit) {
   this.selected = fruit;
 });
 

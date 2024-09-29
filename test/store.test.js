@@ -6,11 +6,10 @@
 //    All rights reserved.
 //
 ////////////////////////////////////////////////////////////////////////////////
-import { vi, describe, it, afterEach, beforeEach, expect } from 'vitest';
 import { createPinia, setActivePinia } from 'pinia';
 import { mount } from '@vue/test-utils';
 import { Component } from '@haixing_hu/vue3-class-component';
-import { addFruitSpy, addFruitsSpy, selectFruitSpy, useBasketStore } from './data/basket';
+import { useBasketStore } from './data/basket';
 import MyComponent from './data/MyComponent.vue';
 import { Store } from '../src/index';
 
@@ -19,9 +18,7 @@ beforeEach(() => {
 });
 
 afterEach(() => {
-  vi.mocked(addFruitSpy).mockClear();
-  vi.mocked(addFruitsSpy).mockClear();
-  vi.mocked(selectFruitSpy).mockClear();
+  jest.clearAllMocks();
 });
 
 describe('Test @Store', () => {
