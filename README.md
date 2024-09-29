@@ -18,7 +18,7 @@ This library was inspired by [vuex-class] and [pinia-class] but with a few key d
 3. It supports the JavaScript-based class-style Vue components using [vue3-class-component], 
    while [pinia-class] primarily targets TypeScript-based class-style Vue 
    components using [vue-facing-decorator].
-4. It provide the [`@DefineStore`](#define-store) decorator which decorates a class as a Pinia store.
+4. It provide the [`toStore`](#to-store) function which converts a class into a Pinia store.
 
 ## Table of Content
 
@@ -29,7 +29,8 @@ This library was inspired by [vuex-class] and [pinia-class] but with a few key d
   - [`@Getter`](#getter)
   - [`@Action`](#action)
   - [`@Store`](#store)
-  - [`@DefineStore`](#define-store)
+  - [`toStore`](#to-store)
+  - [`@RawField`](#raw-field)
 - [Example](#example)
 - [Contributing](#contributing)
 - [License](#license)
@@ -48,14 +49,15 @@ yarn add @haixing_hu/pinia-decorator
 
 ## <span id="usage">Usage</span>
 
-[pinia-decorator] provides the following decorators for your [Vue 3 class-style components]:
+[pinia-decorator] provides the following decorators/functions for your [Vue 3 class-style components]:
 
 - `@State`: Used to inject a read-only state from a [Pinia] store.
 - `@WritableState`: Used to inject a writable state from a [Pinia] store.
 - `@Getter`: Used to inject a getter from a [Pinia] store.
 - `@Action`: Used to inject an action from a [Pinia] store.
 - `@Store`: Used to inject the entire [Pinia] store.
-- `@DefineStore`: Used to decorate a class as a [Pinia] store.
+- `toStore`: Used to convert a class into a [Pinia] store.
+- `@RawField`: Used to define a raw field (non-reactive field) in the state of a [Pinia] store.
 
 ### <span id="state">`@State`</span>
 
@@ -139,18 +141,24 @@ The syntax of the `@Store` decorator is as follows:
 - `store` (required): The function creating a [Pinia] store object defined with 
   the `defineStore()` function from Pinia.
 
-### <span id="define-store">`@DefineStore`</span>
+### <span id="to-store">`toStore`</span>
 
-The `@DefineStore` decorator is used to decorate a class as a [Pinia] store.
+The function `toStore()` is used to convert a class into a [Pinia] store.
 
-The syntax of the `@DefineStore` decorator is as follows:
+The syntax of the `toStore()` function is as follows:
 ```javascript
-@DefineStore(storeId: string)
+toStore(storeId: string, Class: function)
 ```
 
 - `storeId` (required): The id of the store.
+- `Class` (required): The (constructor of) class to be converted into a [Pinia] store.
 
-Note that the `@DefineStore` also support the inheritance of the store class.
+Note that the `@toStore` also support the inheritance of the store class.
+
+### <span id="raw-field">`@RawField`</span>
+
+The `@RawField` decorator is used to mark a field in the state of a [Pinia] store
+as a raw field, which means the field is not reactive.
 
 ## <span id="example">Example</span>
 
@@ -195,15 +203,12 @@ export class MyComponent extends Vue {
 export default toVue(MyComponent);
 ```
 
-For more details, check the following demo projects:
-- [The demo project using vite](https://github.com/haixing-hu/pinia-decorator-demo-vite)
-- [The demo project using webpack](https://github.com/haixing-hu/pinia-decorator-demo-webpack)
-
-Here is an example to define a Pinia store using the `@DefineStore` decorator.
-Note that the `@DefineStore` also support the inheritance of the store class.
+Here is an example to define a Pinia store using the `toStore` function.
+Note that the function also support the inheritance of the store class.
 
 ```javascript
-import { DefineStore } from '@haixing_hu/pinia-decorators';
+import { toStore, RawField } from '@haixing_hu/pinia-decorators';
+import { Logger } from '@haixing_hu/logging';
 import dayjs from 'dayjs';
 
 class BaseUserStore {
@@ -214,9 +219,14 @@ class BaseUserStore {
   password = '';
   
   nickname = '';
+  
+  token = {
+    value: 'token-value',
+    expired: 1000,
+  };
 
   get age() {
-    throw new Error('Should be override by subclass');
+    throw new Error('This getter will be overridden by subclass');
   }
   
   setNickname(nickname) {
@@ -224,17 +234,19 @@ class BaseUserStore {
   }
 
   login() {
-    throw new Error('Should be override by subclass');
+    throw new Error('This function will be overridden by subclass');
   }
 }
 
-@DefineStore('user')
-class UserStore extends BaseUserStore {   // support inheritance of the store class
+class UserStore extends BaseUserStore {     // support class inheritance 
   avatar = '';
 
   birthday = '';
+  
+  @RawField
+  logger = Logger.getLogger('store.user'); // this field is marked as raw field
 
-  get age() {
+  get age() { // override the super class getter
     return dayjs().diff(this.birthday, 'year');
   }
 
@@ -247,18 +259,20 @@ class UserStore extends BaseUserStore {   // support inheritance of the store cl
     return api.updatePassword(this.username, newPassword);
   }
 
-  login() {
+  login() {   // override the super class method
+    this.logger.info('Logging in as:', this.username);
     return api.login(this.username, this.password);
   }
 }
 
-export default UserStore;
+export default toStore('user', UserStore);
 ```
 
 The above example defines a Pinia store named `user` which is equivalent to the following code:
 
 ```javascript
 import { defineStore } from 'pinia';
+import { markRaw } from 'vue';
 
 const useUserStore = defineStore('user', {
   state: () => ({
@@ -266,8 +280,13 @@ const useUserStore = defineStore('user', {
     username: '',
     password: '',
     nickname: '',
+    token: {
+      value: 'token-value',
+      expired: 1000,
+    },
     avatar: '',
     birthday: '',
+    logger: markRaw(Logger.getLogger('store.user')),
   }),
   
   getters: {
@@ -286,6 +305,7 @@ const useUserStore = defineStore('user', {
       return api.updatePassword(this.username, newPassword);
     },
     login() {
+      this.logger.info('Logging in as:', this.username);
       return api.login(this.username, this.password);
     },
   },
@@ -299,9 +319,11 @@ We can use the `user` store in the Vue components as follows:
 <template>
   <div>
     <div>Username: {{ username }}</div>
+    <div>Nickname: {{ nickname }}</div>
     <div>Age: {{ age }}</div>
     <div>Avatar: <img :src="avatar" /></div>
     <button @click="setNickname('new-nickname')">Set Nickname</button>
+    <button @click="avatar = 'new-avatar.png'">Set Avatar</button>
     <button @click="updatePassword('new-password')">Change Password</button>
     <button @click="login()">Login</button>
   </div>
@@ -317,6 +339,9 @@ class UserPage {
   username;
 
   @State(UserStore)
+  nickname;
+  
+  @WritableState(UserStore)
   avatar;
 
   @Getter(UserStore)
@@ -335,6 +360,10 @@ class UserPage {
 export default toVue(UserPage);
 </script>
 ```
+
+For more details, check the following demo projects:
+- [The demo project using vite](https://github.com/haixing-hu/pinia-decorator-demo-vite)
+- [The demo project using webpack](https://github.com/haixing-hu/pinia-decorator-demo-webpack)
 
 ## <span id="contributing">Contributing</span>
 

@@ -7,17 +7,17 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 import { defineStore } from 'pinia';
+import { markRaw } from 'vue';
+import { RAW_PROPERTY_KEY } from './raw-field';
 
 /**
- * This decorator is used to decorate a class as a Pinia store.
- *
- * This decorator should be used to decorate a class field.
+ * This function is used to convert a class into a Pinia store.
  *
  * For example, the following code defines a Pinia store named `user`.
- * Note that the `@DefineStore` also support the inheritance of the store class.
+ * Note that this function also support the inheritance of the store class.
  *
  * ```js
- * import { DefineStore } from '@haixing_hu/pinia-decorators';
+ * import { toStore } from '@haixing_hu/pinia-decorators';
  * import dayjs from 'dayjs';
  *
  * class BaseUserStore {
@@ -42,7 +42,6 @@ import { defineStore } from 'pinia';
  *   }
  * }
  *
- * &#064;DefineStore('user')
  * class UserStore extends BaseUserStore {   // support inheritance of the store class
  *  avatar = '';
  *
@@ -66,7 +65,7 @@ import { defineStore } from 'pinia';
  *  }
  * }
  *
- * export default UserStore;
+ * export default toStore('user', UserStore);
  * ```
  *
  * The above example is equivalent to the following code:
@@ -123,26 +122,26 @@ import { defineStore } from 'pinia';
  * <script>
  * import { Component, toVue } from '@haixing_hu/vue3-class-component';
  * import { State, Getter, Action } from '@haixing_hu/pinia-decorators';
- * import UserStore from 'src/stores/user';
+ * import useUserStore from 'src/stores/user';
  *
  * &#064;Component
  * class UserPage {
- *   &#064;State(UserStore)
+ *   &#064;State(useUserStore)
  *   username;
  *
- *   &#064;State(UserStore)
+ *   &#064;State(useUserStore)
  *   avatar;
  *
- *   &#064;Getter(UserStore)
+ *   &#064;Getter(useUserStore)
  *   age;
  *
- *   &#064;Action(UserStore)
+ *   &#064;Action(useUserStore)
  *   setNickname;
  *
- *   &#064;Action(UserStore)
+ *   &#064;Action(useUserStore)
  *   updatePassword;
  *
- *   &#064;Action(UserStore)
+ *   &#064;Action(useUserStore)
  *   login;
  * }
  *
@@ -152,54 +151,57 @@ import { defineStore } from 'pinia';
  *
  * @param {string} storeId
  *     The ID of the Pinia store.
+ * @param {function} Class
+ *     The class to be converted into a Pinia store.
  * @return {function}
  *     A class decorator function, which decorates a class as a Pinia store.
  */
-function DefineStore(storeId) {
-  return function decorate(Class, context) {
-    if (context === null || typeof context !== 'object') {
-      throw new TypeError('The context must be an object.');
-    }
-    if (typeof Class !== 'function' || context.kind !== 'class') {
-      throw new TypeError('The `@DefineStore` can only decorate a class.');
-    }
-    const state = () => {
-      const instance = new Class();
-      // Gets all fields of the instance as the state object of the store.
-      const stateObj = {};
-      Object.getOwnPropertyNames(instance).forEach((key) => {
+function toStore(storeId, Class) {
+  if (typeof Class !== 'function') {
+    throw new TypeError('The second argument must be a class.');
+  }
+  const state = () => {
+    const instance = new Class();
+    const metadata = Class[Symbol.metadata] ?? {};
+    const rawFields = metadata[RAW_PROPERTY_KEY] ?? [];
+    // Gets all fields of the instance as the state object of the store.
+    const stateObj = {};
+    Object.getOwnPropertyNames(instance).forEach((key) => {
+      if (rawFields.includes(key)) {
+        stateObj[key] = markRaw(instance[key]);
+      } else {
         stateObj[key] = instance[key];
-      });
-      return stateObj;
-    };
-    const getters = {};
-    const actions = {};
-    // Traverses the prototype chain to get all getters and methods.
-    let proto = Class.prototype;
-    while (proto !== Object.prototype) {
-      const currentProto = proto;
-      Object.getOwnPropertyNames(currentProto).forEach((key) => {
-        if (key === 'constructor') {
-          return;
-        }
-        const descriptor = Object.getOwnPropertyDescriptor(currentProto, key);
-        if (descriptor.get) {
-          if (!Object.prototype.hasOwnProperty.call(getters, key)) {
-            // the getter of the class is treated as a getter of the store
-            getters[key] = (state) => descriptor.get.call(state);
-          }
-        } else if (typeof descriptor.value === 'function') {
-          if (!Object.prototype.hasOwnProperty.call(actions, key)) {
-            // the method of the class is treated as an action of the store
-            actions[key] = descriptor.value;
-          }
-        }
-      });
-      proto = Object.getPrototypeOf(currentProto);
-    }
-    // Creates a store using the `defineStore` function of Pinia.
-    return defineStore(storeId, { state, getters, actions });
+      }
+    });
+    return stateObj;
   };
+  const getters = {};
+  const actions = {};
+  // Traverses the prototype chain to get all getters and methods.
+  let proto = Class.prototype;
+  while (proto !== Object.prototype) {
+    const currentProto = proto;
+    Object.getOwnPropertyNames(currentProto).forEach((key) => {
+      if (key === 'constructor') {
+        return;
+      }
+      const descriptor = Object.getOwnPropertyDescriptor(currentProto, key);
+      if (descriptor.get) {
+        if (!Object.prototype.hasOwnProperty.call(getters, key)) {
+          // the getter of the class is treated as a getter of the store
+          getters[key] = (state) => descriptor.get.call(state);
+        }
+      } else if (typeof descriptor.value === 'function') {
+        if (!Object.prototype.hasOwnProperty.call(actions, key)) {
+          // the method of the class is treated as an action of the store
+          actions[key] = descriptor.value;
+        }
+      }
+    });
+    proto = Object.getPrototypeOf(currentProto);
+  }
+  // Creates a store using the `defineStore` function of Pinia.
+  return defineStore(storeId, { state, getters, actions });
 }
 
-export default DefineStore;
+export default toStore;

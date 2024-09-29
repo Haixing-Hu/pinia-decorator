@@ -1,5 +1,4 @@
 ////////////////////////////////////////////////////////////////////////////////
-import { Component } from '@haixing_hu/vue3-class-component';
 //
 //    Copyright (c) 2022 - 2024.
 //    Haixing Hu, Qubit Co. Ltd.
@@ -8,8 +7,9 @@ import { Component } from '@haixing_hu/vue3-class-component';
 //
 ////////////////////////////////////////////////////////////////////////////////
 import { createPinia, setActivePinia } from 'pinia';
+import { isReactive } from 'vue';
 import { Logger } from '@haixing_hu/logging';
-import { DefineStore } from '../src/index';
+import { toStore, RawField } from '../src/index';
 import CustomizedAppender from './data/customized-appender';
 
 beforeEach(() => {
@@ -18,19 +18,17 @@ beforeEach(() => {
 
 describe('DefineStore', () => {
   it('should create a Pinia store with the correct state', () => {
-    @DefineStore('testStore')
     class TestStore {
       constructor() {
         this.value = 42;
       }
     }
-    const useTestStore = TestStore;
+    const useTestStore = toStore('test', TestStore);
     const store = useTestStore();
     expect(store.value).toBe(42);
   });
 
   it('should create a Pinia store with the correct getters', () => {
-    @DefineStore('testStore')
     class TestStore {
       constructor() {
         this.value = 42;
@@ -39,13 +37,12 @@ describe('DefineStore', () => {
         return this.value * 2;
       }
     }
-    const useTestStore = TestStore;
+    const useTestStore = toStore('test', TestStore);
     const store = useTestStore();
     expect(store.doubleValue).toBe(84);
   });
 
   it('should create a Pinia store with the correct actions', () => {
-    @DefineStore('testStore')
     class TestStore {
       value = 42;
 
@@ -53,29 +50,16 @@ describe('DefineStore', () => {
         this.value += 1;
       }
     }
-    const useTestStore = TestStore;
+    const useTestStore = toStore('test', TestStore);
     const store = useTestStore();
     store.increment();
     expect(store.value).toBe(43);
   });
 
-  it('should throw error if not decorated on a class', () => {
+  it('should throw error if the second argument is not a class', () => {
     expect(() => {
-      class TestStore {
-        @DefineStore('testStore')
-        value = 42;
-
-        increment() {
-          this.value += 1;
-        }
-      }
-      new TestStore();
-    }).toThrow(TypeError, 'The `@DefineStore` can only decorate a class.');
-  });
-
-  it('should throw an error if context is not an object', () => {
-    class TestStore {}
-    expect(() => DefineStore('testStore')(TestStore, null)).toThrow(TypeError);
+      toStore('test', 'xxx');
+    }).toThrow(TypeError, 'The second argument must be a class.');
   });
 
   it('should support class inheritance', () => {
@@ -98,7 +82,7 @@ describe('DefineStore', () => {
         throw new Error('should be overwrite by sub-classes');
       }
     }
-    @DefineStore('test')
+
     class TestStore extends BaseStore {
       name = 'Test';
 
@@ -114,7 +98,8 @@ describe('DefineStore', () => {
         this.value -= 1;
       }
     }
-    const store = TestStore();
+    const useTestStore = toStore('test', TestStore);
+    const store = useTestStore();
 
     expect(store.value).toBe(42);
     expect(store.name).toBe('Test');
@@ -157,7 +142,7 @@ describe('DefineStore', () => {
         throw new Error('should be overwrite by sub-classes');
       }
     }
-    @DefineStore('test')
+
     class TestStore extends BaseStore {
       name = 'Test';
 
@@ -180,7 +165,8 @@ describe('DefineStore', () => {
         this.value -= 1;
       }
     }
-    const store = TestStore();
+    const useTestStore = toStore('test', TestStore);
+    const store = useTestStore();
 
     expect(store.value).toBe(100);
     expect(store.name).toBe('Hello');
@@ -234,7 +220,6 @@ describe('DefineStore', () => {
     const appender = new CustomizedAppender();
     const logger = Logger.getLogger('TestLogger', { appender, level: 'TRACE' });
 
-    @DefineStore('test')
     class TestStore extends getBaseClass(logger) {
       name = 'Test';
 
@@ -258,7 +243,8 @@ describe('DefineStore', () => {
       }
     }
 
-    const store = TestStore();
+    const useTestStore = toStore('test', TestStore);
+    const store = useTestStore();
 
     expect(store.value).toBe(100);
     expect(store.name).toBe('Hello');
@@ -284,5 +270,115 @@ describe('DefineStore', () => {
       '[INFO] TestLogger - %s',
       'Hello World!',
     ]);
+  });
+
+  it('should support @RawField', () => {
+    class BaseClass {
+      value = 42;
+
+      code = 'base';
+
+      base = {
+        id: 1,
+        name: 'Base',
+      };
+
+      @RawField
+      logger = null;
+
+      constructor(value, logger) {
+        this.value = value;
+        this.logger = logger;
+      }
+
+      get doubleValue() {
+        return this.value * 2;
+      }
+
+      get fullName() {
+        throw new Error('should be overwrite by sub-classes');
+      }
+
+      increment() {
+        this.value += 1;
+      }
+
+      decrement() {
+        throw new Error('should be overwrite by sub-classes');
+      }
+
+      hello() {
+        this.logger.info('Hello World!');
+      }
+    }
+
+    const appender = new CustomizedAppender();
+    const logger = Logger.getLogger('TestLogger', { appender, level: 'TRACE' });
+
+    class TestStore extends BaseClass {
+      name = 'Test';
+
+      code = 'sub';  // overwrite
+
+      obj = {
+        id: 123,
+        code: 'abc',
+      };
+
+      constructor() {
+        super(100, logger);
+        this.name = 'Hello';
+      }
+
+      get fullName() {
+        return `${this.name} Store`;
+      }
+
+      set foo(value) {
+        this.name += value;
+      }
+
+      decrement() {
+        this.value -= 1;
+      }
+    }
+
+    const useTestStore = toStore('test', TestStore);
+    const store = useTestStore();
+    expect(store.value).toBe(100);
+    expect(store.name).toBe('Hello');
+    expect(store.code).toBe('sub');
+    expect(store.base).toEqual({ id: 1, name: 'Base' });
+    expect(store.obj).toEqual({ id: 123, code: 'abc' });
+    expect(store.logger).toBe(logger);
+    expect(store.doubleValue).toBe(200);
+    expect(store.fullName).toBe('Hello Store');
+    store.increment();
+    expect(store.value).toBe(101);
+    store.decrement();
+    expect(store.value).toBe(100);
+    expect(store.foo).toBeUndefined();
+
+    expect(store.$state.value).toBe(100);
+    expect(store.$state.name).toBe('Hello');
+    expect(store.$state.code).toBe('sub');
+    expect(store.$state.base).toEqual({ id: 1, name: 'Base' });
+    expect(store.$state.obj).toEqual({ id: 123, code: 'abc' });
+    expect(store.$state.logger).toBe(logger);
+    expect(Object.getOwnPropertyNames(store.$state))
+      .toEqual(['value', 'code', 'base', 'logger', 'name', 'obj']);
+
+    expect(typeof store.hello).toBe('function');
+    store.hello();
+    expect(appender.logs.length).toBe(1);
+    expect(appender.logs[0].type).toBe('INFO');
+    expect(appender.logs[0].args).toEqual([
+      '[INFO] TestLogger - %s',
+      'Hello World!',
+    ]);
+
+    expect(isReactive(store.$state.obj)).toBe(true);
+    expect(isReactive(store.$state.base)).toBe(true);
+    expect(isReactive(store.$state.logger)).toBe(false);
   });
 });

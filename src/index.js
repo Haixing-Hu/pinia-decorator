@@ -11,7 +11,8 @@ import Getter from './getter';
 import State from './state';
 import Store from './store';
 import WritableState from './writable-state';
-import DefineStore from './define-store';
+import RawField from './raw-field';
+import toStore from './to-store';
 
 export {
   Action,
@@ -19,5 +20,6 @@ export {
   State,
   Store,
   WritableState,
-  DefineStore,
+  RawField,
+  toStore,
 };

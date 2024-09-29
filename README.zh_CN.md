@@ -27,7 +27,8 @@
   - [`@Getter`](#getter)
   - [`@Action`](#action)
   - [`@Store`](#store)
-  - [`@DefineStore`](#define-store)
+  - [`toStore`](#to-store)
+  - [`@RawField`](#raw-field)
 - [示例](#example)
 - [贡献](#contributing)
 - [许可证](#license)
@@ -128,17 +129,23 @@ getter 和 action。
 
 - `store`（必需）：使用 `Pinia` 的 `defineStore()` 函数定义的待注入的 [Pinia] 存储对象的创建函数。
 
-### <span id="define-store">`@DefineStore`</span>
+### <span id="to-store">`toStore()`</span>
 
-`@DefineStore` 装饰器用于将一个类定义为 Pinia 存储。它允许你定义一个类，该类的实例将作为 Pinia 存储的实例。
+`toStore()` 函数用于将一个类定义为 Pinia 存储。它允许你定义一个类，该类的实例将作为 Pinia 存储的实例。
 
-`@DefineStore` 装饰器的语法如下：
+`toStore()` 函数的语法如下：
 
 ```javascript
-@DefineStore(storeId: string)
+toStore(storeId: string, Class: function)
 ```
 
 - `storeId`（必需）：Pinia 存储的ID。
+- `Class`（必需）：待定义为 Pinia 存储的类。
+
+### <span id="raw-field">`@RawField`</span>
+
+`@RawField` 装饰器用于将一个类的字段标记为原始字段，这样该类被转换为 Pinia store 后，该
+字段表示的状态不会被转换为响应式状态。
 
 ## <span id="example">示例</span>
 
@@ -183,19 +190,14 @@ export class MyComponent extends Vue {
 export default toVue(MyComponent);
 ```
 
-有关更多详细信息，请查看以下演示项目：
-
-- [使用 vite 的演示项目](https://github.com/haixing-hu/pinia-decorator-demo-vite)
-- [使用 webpack 的演示项目](https://github.com/haixing-hu/pinia-decorator-demo-webpack)
-
-下面是一个使用 `@DefineStore` 装饰器的示例：
+下面是一个使用 `toStore()` 函数的示例，注意该函数支持类的继承：
 
 ```javascript
-import { DefineStore } from '@haixing_hu/pinia-decorators';
+import { toStore, RawField } from '@haixing_hu/pinia-decorators';
+import { Logger } from '@haixing_hu/logging';
 import dayjs from 'dayjs';
 
-@DefineStore('user')
-class UserStore {
+class BaseUserStore {
   id = '';
 
   username = '';
@@ -204,11 +206,33 @@ class UserStore {
 
   nickname = '';
 
+  token = {
+    value: 'token-value',
+    expired: 1000,
+  };
+
+  get age() {
+    throw new Error('This getter will be overridden by subclass');
+  }
+
+  setNickname(nickname) {
+    this.nickname = nickname;
+  }
+
+  login() {
+    throw new Error('This function will be overridden by subclass');
+  }
+}
+
+class UserStore extends BaseUserStore {     // support class inheritance 
   avatar = '';
 
   birthday = '';
 
-  get age() {
+  @RawField
+  logger = Logger.getLogger('store.user'); // this field is marked as raw field
+
+  get age() { // override the super class getter
     return dayjs().diff(this.birthday, 'year');
   }
 
@@ -221,18 +245,20 @@ class UserStore {
     return api.updatePassword(this.username, newPassword);
   }
 
-  login() {
+  login() {   // override the super class method
+    this.logger.info('Logging in as:', this.username);
     return api.login(this.username, this.password);
   }
 }
 
-export default UserStore;
+export default toStore('user', UserStore);
 ```
 
 以上例子定义了一个名为 `user` 的 Pinia 存储，它等价于以下代码：
 
 ```javascript
 import { defineStore } from 'pinia';
+import { markRaw } from 'vue';
 
 const useUserStore = defineStore('user', {
   state: () => ({
@@ -240,15 +266,23 @@ const useUserStore = defineStore('user', {
     username: '',
     password: '',
     nickname: '',
+    token: {
+      value: 'token-value',
+      expired: 1000,
+    },
     avatar: '',
     birthday: '',
+    logger: markRaw(Logger.getLogger('store.user')),
   }),
-  
+
   getters: {
     age: (state) => dayjs().diff(state.birthday, 'year'),
   },
-  
+
   actions: {
+    setNickname(nickname) {
+      this.nickname = nickname;
+    },
     setAvatar(avatar) {
       this.avatar = avatar;
     },
@@ -257,6 +291,7 @@ const useUserStore = defineStore('user', {
       return api.updatePassword(this.username, newPassword);
     },
     login() {
+      this.logger.info('Logging in as:', this.username);
       return api.login(this.username, this.password);
     },
   },
@@ -271,38 +306,52 @@ export default useUserStore;
 <template>
   <div>
     <div>Username: {{ username }}</div>
+    <div>Nickname: {{ nickname }}</div>
     <div>Age: {{ age }}</div>
     <div>Avatar: <img :src="avatar" /></div>
+    <button @click="setNickname('new-nickname')">Set Nickname</button>
+    <button @click="avatar = 'new-avatar.png'">Set Avatar</button>
     <button @click="updatePassword('new-password')">Change Password</button>
     <button @click="login()">Login</button>
   </div>
 </template>
 <script>
-import { Component, toVue } from '@haixing_hu/vue3-class-component';
-import { State, Getter, Action } from '@haixing_hu/pinia-decorators';
-import UserStore from 'src/stores/user';
+  import { Component, toVue } from '@haixing_hu/vue3-class-component';
+  import { State, Getter, Action } from '@haixing_hu/pinia-decorators';
+  import UserStore from 'src/stores/user';
 
-@Component
-class UserPage {
-  @State(UserStore)
-  username;
+  @Component
+  class UserPage {
+    @State(UserStore)
+    username;
 
-  @State(UserStore)
-  avatar;
+    @State(UserStore)
+    nickname;
 
-  @Getter(UserStore)
-  age;
+    @WritableState(UserStore)
+    avatar;
 
-  @Action(UserStore)
-  updatePassword;
+    @Getter(UserStore)
+    age;
 
-  @Action(UserStore)
-  login;
-}
+    @Action(UserStore)
+    setNickname;
 
-export default toVue(UserPage);
+    @Action(UserStore)
+    updatePassword;
+
+    @Action(UserStore)
+    login;
+  }
+
+  export default toVue(UserPage);
 </script>
 ```
+
+有关更多详细信息，请查看以下演示项目：
+
+- [使用 vite 的演示项目](https://github.com/haixing-hu/pinia-decorator-demo-vite)
+- [使用 webpack 的演示项目](https://github.com/haixing-hu/pinia-decorator-demo-webpack)
 
 ## <span id="contributing">贡献</span>
 
