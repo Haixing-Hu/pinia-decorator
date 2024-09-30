@@ -157,6 +157,9 @@ import { RAW_PROPERTY_KEY } from './raw-field';
  *     A class decorator function, which decorates a class as a Pinia store.
  */
 function toStore(storeId, Class) {
+  if (typeof storeId !== 'string') {
+    throw new TypeError('The first argument must be a string.');
+  }
   if (typeof Class !== 'function') {
     throw new TypeError('The second argument must be a class.');
   }

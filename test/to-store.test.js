@@ -56,12 +56,6 @@ describe('DefineStore', () => {
     expect(store.value).toBe(43);
   });
 
-  it('should throw error if the second argument is not a class', () => {
-    expect(() => {
-      toStore('test', 'xxx');
-    }).toThrow(TypeError, 'The second argument must be a class.');
-  });
-
   it('should support class inheritance', () => {
     class BaseStore {
       value = 42;
@@ -380,5 +374,18 @@ describe('DefineStore', () => {
     expect(isReactive(store.$state.obj)).toBe(true);
     expect(isReactive(store.$state.base)).toBe(true);
     expect(isReactive(store.$state.logger)).toBe(false);
+  });
+
+  it('should throw error if the first argument is not a string', () => {
+    class Foo {}
+    expect(() => {
+      toStore(123, Foo);
+    }).toThrow(TypeError, 'The first argument must be a string.');
+  });
+
+  it('should throw error if the second argument is not a class', () => {
+    expect(() => {
+      toStore('test', 'xxx');
+    }).toThrow(TypeError, 'The second argument must be a class.');
   });
 });
