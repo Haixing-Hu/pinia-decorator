@@ -46,8 +46,7 @@ describe('RawField', () => {
     expect(appender.logs.length).toBe(1);
     expect(appender.logs[0].type).toBe('INFO');
     expect(appender.logs[0].args).toEqual([
-      '[INFO] TestLogger - %s',
-      'Hello World!',
+      '[INFO] TestLogger - Hello World!',
     ]);
     expect(isReactive(store.obj)).toBe(true);
     expect(isReactive(store.logger)).toBe(false);

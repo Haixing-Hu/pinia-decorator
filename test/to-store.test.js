@@ -261,8 +261,7 @@ describe('DefineStore', () => {
     expect(appender.logs.length).toBe(1);
     expect(appender.logs[0].type).toBe('INFO');
     expect(appender.logs[0].args).toEqual([
-      '[INFO] TestLogger - %s',
-      'Hello World!',
+      '[INFO] TestLogger - Hello World!',
     ]);
   });
 
@@ -367,8 +366,7 @@ describe('DefineStore', () => {
     expect(appender.logs.length).toBe(1);
     expect(appender.logs[0].type).toBe('INFO');
     expect(appender.logs[0].args).toEqual([
-      '[INFO] TestLogger - %s',
-      'Hello World!',
+      '[INFO] TestLogger - Hello World!',
     ]);
 
     expect(isReactive(store.$state.obj)).toBe(true);
