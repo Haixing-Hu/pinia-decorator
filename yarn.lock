@@ -1964,10 +1964,10 @@ __metadata:
     vite: "npm:^4.5.5"
     vue: "npm:^3.5.13"
   peerDependencies:
-    "@babel/runtime": ^7.24.0
-    "@haixing_hu/vue3-class-component": ^2.3.0
-    pinia: ^2.0.0
-    vue: ^3.0.0
+    "@babel/runtime": ^7.26.0
+    "@haixing_hu/vue3-class-component": ^2.3.1
+    pinia: ^2.3.0
+    vue: ^3.5.13
   languageName: unknown
   linkType: soft
 
