@@ -7,15 +7,17 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 import { createPinia, setActivePinia } from 'pinia';
-import { mount } from '@vue/test-utils';
+import { config, mount } from '@vue/test-utils';
 import { nextTick } from 'vue';
-import { Component } from '@haixing_hu/vue3-class-component';
+import { Component } from '@qubit-ltd/vue3-class-component';
 import { useBasketStore } from './data/basket';
 import MyComponent from './data/MyComponent.vue';
 import { WritableState } from '../src/index';
 
 beforeEach(() => {
-  setActivePinia(createPinia());
+  const pinia = createPinia();
+  setActivePinia(pinia);
+  config.global.plugins = [pinia];
 });
 
 afterEach(() => {

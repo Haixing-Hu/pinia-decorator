@@ -6,7 +6,7 @@
 //    All rights reserved.
 //
 ////////////////////////////////////////////////////////////////////////////////
-import { createDecorator } from '@haixing_hu/vue3-class-component';
+import { createDecorator } from '@qubit-ltd/vue3-class-component';
 import { mapActions } from 'pinia';
 
 /**

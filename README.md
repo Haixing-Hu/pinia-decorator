@@ -1,6 +1,6 @@
 # pinia-decorator
 
-[![npm package](https://img.shields.io/npm/v/@haixing_hu/pinia-decorator.svg)](https://npmjs.com/package/@haixing_hu/pinia-decorator)
+[![npm package](https://img.shields.io/npm/v/@qubit-ltd/pinia-decorator.svg)](https://npmjs.com/package/@qubit-ltd/pinia-decorator)
 [![License](https://img.shields.io/badge/License-Apache-blue.svg)](https://www.apache.org/licenses/LICENSE-2.0)
 [![中文文档](https://img.shields.io/badge/文档-中文版-blue.svg)](README.zh_CN.md)
 [![CircleCI](https://dl.circleci.com/status-badge/img/gh/Haixing-Hu/pinia-decorator/tree/master.svg?style=shield)](https://dl.circleci.com/status-badge/redirect/gh/Haixing-Hu/pinia-decorator/tree/master)
@@ -40,11 +40,11 @@ This library was inspired by [vuex-class] and [pinia-class] but with a few key d
 You can install [pinia-decorator] via npm or yarn:
 
 ```bash
-npm install @haixing_hu/pinia-decorator
+npm install @qubit-ltd/pinia-decorator
 ```
 or
 ```
-yarn add @haixing_hu/pinia-decorator
+yarn add @qubit-ltd/pinia-decorator
 ```
 
 ## <span id="usage">Usage</span>
@@ -165,8 +165,8 @@ as a raw field, which means the field is not reactive.
 Here's a simple example of how to use these decorators in your Vue component:
 
 ```javascript
-import { Component, toVue } from '@haixing_hu/vue3-class-component';
-import { State, WritableState, Getter, Action, Store } from '@haixing_hu/pinia-decorator';
+import { Component, toVue } from '@qubit-ltd/vue3-class-component';
+import { State, WritableState, Getter, Action, Store } from '@qubit-ltd/pinia-decorator';
 import { useMyStore } from './my-pinia-store-module';
 
 @Component
@@ -207,8 +207,8 @@ Here is an example to define a Pinia store using the `toStore` function.
 Note that the function also support the inheritance of the store class.
 
 ```javascript
-import { toStore, RawField } from '@haixing_hu/pinia-decorators';
-import { Logger } from '@haixing_hu/logging';
+import { toStore, RawField } from '@qubit-ltd/pinia-decorators';
+import { Logger } from '@qubit-ltd/logging';
 import dayjs from 'dayjs';
 
 class BaseUserStore {
@@ -329,8 +329,8 @@ We can use the `user` store in the Vue components as follows:
   </div>
 </template>
 <script>
-import { Component, toVue } from '@haixing_hu/vue3-class-component';
-import { State, Getter, Action } from '@haixing_hu/pinia-decorators';
+import { Component, toVue } from '@qubit-ltd/vue3-class-component';
+import { State, Getter, Action } from '@qubit-ltd/pinia-decorators';
 import UserStore from 'src/stores/user';
 
 @Component
@@ -377,13 +377,13 @@ We welcome your contributions and feedback!
 [pinia-decorator] is distributed under the Apache 2.0 license. 
 See the [LICENSE](LICENSE) file for more details.
 
-[pinia-decorator]: https://npmjs.com/package/@haixing_hu/pinia-decorator
+[pinia-decorator]: https://npmjs.com/package/@qubit-ltd/pinia-decorator
 [Pinia]: https://pinia.vuejs.org/
 [Vue]: https://vuejs.org/
 [Vue 3]: https://vuejs.org/
-[Vue class-style components]: https://npmjs.com/package/@haixing_hu/vue3-class-component
-[Vue class-style component]: https://npmjs.com/package/@haixing_hu/vue3-class-component
-[vue3-class-component]: https://npmjs.com/package/@haixing_hu/vue3-class-component
+[Vue class-style components]: https://npmjs.com/package/@qubit-ltd/vue3-class-component
+[Vue class-style component]: https://npmjs.com/package/@qubit-ltd/vue3-class-component
+[vue3-class-component]: https://npmjs.com/package/@qubit-ltd/vue3-class-component
 [stage 3 proposal of JavaScript decorators]: https://github.com/tc39/proposal-decorators
 [vuex-class]: https://github.com/ktsn/vuex-class
 [pinia-class]: https://github.com/jquagliatini/pinia-class

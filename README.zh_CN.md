@@ -1,6 +1,6 @@
 # pinia-decorator
 
-[![npm package](https://img.shields.io/npm/v/@haixing_hu/pinia-decorator.svg)](https://npmjs.com/package/@haixing_hu/pinia-decorator)
+[![npm package](https://img.shields.io/npm/v/@qubit-ltd/pinia-decorator.svg)](https://npmjs.com/package/@qubit-ltd/pinia-decorator)
 [![License](https://img.shields.io/badge/License-Apache-blue.svg)](https://www.apache.org/licenses/LICENSE-2.0)
 [![English Document](https://img.shields.io/badge/Document-English-blue.svg)](README.md)
 [![CircleCI](https://dl.circleci.com/status-badge/img/gh/Haixing-Hu/pinia-decorator/tree/master.svg?style=shield)](https://dl.circleci.com/status-badge/redirect/gh/Haixing-Hu/pinia-decorator/tree/master)
@@ -38,11 +38,11 @@
 你可以通过 npm 或 yarn 安装 [pinia-decorator]：
 
 ```bash
-npm install @haixing_hu/pinia-decorator
+npm install @qubit-ltd/pinia-decorator
 ```
 或
 ```
-yarn add @haixing_hu/pinia-decorator
+yarn add @qubit-ltd/pinia-decorator
 ```
 
 ## <span id="usage">使用</span>
@@ -152,8 +152,8 @@ toStore(storeId: string, Class: function)
 以下是如何在 Vue 组件中使用这些装饰器的简单示例：
 
 ```javascript
-import { Component, toVue } from '@haixing_hu/vue3-class-component';
-import { State, WritableState, Getter, Action, Store } from '@haixing_hu/pinia-decorator';
+import { Component, toVue } from '@qubit-ltd/vue3-class-component';
+import { State, WritableState, Getter, Action, Store } from '@qubit-ltd/pinia-decorator';
 import { useMyStore } from './my-pinia-store-module';
 
 @Component
@@ -193,8 +193,8 @@ export default toVue(MyComponent);
 下面是一个使用 `toStore()` 函数的示例，注意该函数支持类的继承：
 
 ```javascript
-import { toStore, RawField } from '@haixing_hu/pinia-decorators';
-import { Logger } from '@haixing_hu/logging';
+import { toStore, RawField } from '@qubit-ltd/pinia-decorators';
+import { Logger } from '@qubit-ltd/logging';
 import dayjs from 'dayjs';
 
 class BaseUserStore {
@@ -316,8 +316,8 @@ export default useUserStore;
   </div>
 </template>
 <script>
-  import { Component, toVue } from '@haixing_hu/vue3-class-component';
-  import { State, Getter, Action } from '@haixing_hu/pinia-decorators';
+  import { Component, toVue } from '@qubit-ltd/vue3-class-component';
+  import { State, Getter, Action } from '@qubit-ltd/pinia-decorators';
   import UserStore from 'src/stores/user';
 
   @Component
@@ -365,13 +365,13 @@ export default useUserStore;
 
 请查看 [LICENSE](LICENSE) 文件以获取更多详细信息。
 
-[pinia-decorator]: https://npmjs.com/package/@haixing_hu/pinia-decorator
+[pinia-decorator]: https://npmjs.com/package/@qubit-ltd/pinia-decorator
 [Pinia]: https://pinia.vuejs.org/
 [Vue]: https://vuejs.org/
 [Vue 3]: https://vuejs.org/
-[Vue 类风格组件]: https://npmjs.com/package/@haixing_hu/vue3-class-component
-[Vue 类风格组件]: https://npmjs.com/package/@haixing_hu/vue3-class-component
-[vue3-class-component]: https://npmjs.com/package/@haixing_hu/vue3-class-component
+[Vue 类风格组件]: https://npmjs.com/package/@qubit-ltd/vue3-class-component
+[Vue 类风格组件]: https://npmjs.com/package/@qubit-ltd/vue3-class-component
+[vue3-class-component]: https://npmjs.com/package/@qubit-ltd/vue3-class-component
 [JavaScript 装饰器的第三阶段提案]: https://github.com/tc39/proposal-decorators
 [vuex-class]: https://github.com/ktsn/vuex-class
 [pinia-class]: https://github.com/jquagliatini/pinia-class

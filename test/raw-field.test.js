@@ -8,12 +8,15 @@
 ////////////////////////////////////////////////////////////////////////////////
 import { createPinia, setActivePinia } from 'pinia';
 import { isReactive } from 'vue';
-import { Logger } from '@haixing_hu/logging';
+import { config } from '@vue/test-utils';
+import { Logger } from '@qubit-ltd/logging';
 import { RawField, toStore } from '../src/index';
 import CustomizedAppender from './data/customized-appender';
 
 beforeEach(() => {
-  setActivePinia(createPinia());
+  const pinia = createPinia();
+  setActivePinia(pinia);
+  config.global.plugins = [pinia];
 });
 
 describe('RawField', () => {

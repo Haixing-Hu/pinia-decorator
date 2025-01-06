@@ -17,7 +17,7 @@ import { RAW_PROPERTY_KEY } from './raw-field';
  * Note that this function also support the inheritance of the store class.
  *
  * ```js
- * import { toStore } from '@haixing_hu/pinia-decorators';
+ * import { toStore } from '@qubit-ltd/pinia-decorators';
  * import dayjs from 'dayjs';
  *
  * class BaseUserStore {
@@ -120,8 +120,8 @@ import { RAW_PROPERTY_KEY } from './raw-field';
  *   </div>
  * </template>
  * <script>
- * import { Component, toVue } from '@haixing_hu/vue3-class-component';
- * import { State, Getter, Action } from '@haixing_hu/pinia-decorators';
+ * import { Component, toVue } from '@qubit-ltd/vue3-class-component';
+ * import { State, Getter, Action } from '@qubit-ltd/pinia-decorators';
  * import useUserStore from 'src/stores/user';
  *
  * &#064;Component
