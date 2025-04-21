@@ -16,7 +16,7 @@
 2. 它支持 [Vue 3]。
 3. 它支持使用 [vue3-class-component] 实现的 JavaScript 类风格 Vue 组件，
    而 [pinia-class] 主要针对使用 [vue-facing-decorator] 实现的 TypeScript 类风格 Vue 组件。
-4. 它支持使用 [`@DefineStore`](#define-store) 装饰器将一个类定义为 Pinia 存储。
+4. 它提供了 [`toStore`](#to-store) 函数，用于将一个类转换为 Pinia 存储。
 
 ## 目录
 
@@ -41,7 +41,7 @@
 npm install @qubit-ltd/pinia-decorator
 ```
 或
-```
+```bash
 yarn add @qubit-ltd/pinia-decorator
 ```
 
@@ -54,7 +54,8 @@ yarn add @qubit-ltd/pinia-decorator
 - `@Getter`：用于将 getter 从 [Pinia] 存储注入到组件中。
 - `@Action`：用于将 action 从 [Pinia] 存储注入到组件中。
 - `@Store`：用于将整个 [Pinia] 存储注入到组件中。
-- `@DefineStore`：用于将一个类定义为 Pinia 存储。
+- `toStore`：用于将一个类转换为 Pinia 存储。
+- `@RawField`：用于将一个类的字段标记为原始字段（非响应式字段）。
 
 ### <span id="state">`@State`</span>
 
@@ -71,6 +72,15 @@ yarn add @qubit-ltd/pinia-decorator
 - `stateName`（可选）：待注入的状态在 [Pinia] 存储中的名称。如果未提供，
   装饰器将使用被装饰的字段名作为待注入的状态的名称。
 
+示例：
+```js
+@State(useUserStore)
+username;  // 注入用户存储中的 'username' 状态
+
+@State(useUserStore, 'avatar')
+userAvatar;  // 将用户存储中的 'avatar' 状态注入为 'userAvatar'
+```
+
 ### <span id="writable-state">`@WritableState`</span>
 
 `@WritableState` 装饰器与 `@State` 类似，但它允许你将可写状态从 [Pinia] 存储注入到 
@@ -85,6 +95,15 @@ yarn add @qubit-ltd/pinia-decorator
 - `store`（必需）：使用 `Pinia` 的 `defineStore()` 函数定义的待注入的 [Pinia] 存储对象。
 - `stateName`（可选）：待注入的状态在 [Pinia] 存储中的名称。如果未提供，
   装饰器将使用被装饰的字段名作为待注入的状态的名称。
+
+示例：
+```js
+@WritableState(useUserStore)
+nickname;  // 注入用户存储中的 'nickname' 状态，允许读取和修改
+
+@WritableState(useUserStore, 'avatar')
+userAvatar;  // 将用户存储中的 'avatar' 状态注入为 'userAvatar'，允许读取和修改
+```
 
 ### <span id="getter">`@Getter`</span>
 
@@ -101,6 +120,15 @@ yarn add @qubit-ltd/pinia-decorator
 - `getterName`（可选）：待注入的 getter 在 [Pinia] 存储中的名称。如果未提供，
   装饰器将使用被装饰的字段名作为待注入的 getter 的名称。
 
+示例：
+```js
+@Getter(useUserStore)
+isLoggedIn;  // 注入用户存储中的 'isLoggedIn' getter
+
+@Getter(useUserStore, 'fullName')
+userName;  // 将用户存储中的 'fullName' getter 注入为 'userName'
+```
+
 ### <span id="action">`@Action`</span>
 
 `@Action` 装饰器用于将 action 从 [Pinia] 存储注入到 [Vue 类风格组件] 中。
@@ -115,7 +143,16 @@ yarn add @qubit-ltd/pinia-decorator
 - `store`（必需）：使用 `Pinia` 的 `defineStore()` 函数定义的待注入的 [Pinia] 存储对象。
 - `actionName`（可选）：待注入的 action 在 [Pinia] 存储中的名称。如果未提供，
   装饰器将使用被装饰的字段名作为待注入的 action 的名称。
-- 
+
+示例：
+```js
+@Action(useUserStore)
+login;  // 注入用户存储中的 'login' action
+
+@Action(useUserStore, 'updateProfile')
+updateUserProfile;  // 将用户存储中的 'updateProfile' action 注入为 'updateUserProfile'
+```
+
 ### <span id="store">`@Store`</span>
 
 `@Store` 装饰器用于将整个 [Pinia] 存储注入到 Vue 类风格组件中。它允许你访问存储的所有状态、
@@ -129,9 +166,15 @@ getter 和 action。
 
 - `store`（必需）：使用 `Pinia` 的 `defineStore()` 函数定义的待注入的 [Pinia] 存储对象的创建函数。
 
+示例：
+```js
+@Store(useUserStore)
+userStore;  // 将整个用户存储注入为 'userStore'
+```
+
 ### <span id="to-store">`toStore()`</span>
 
-`toStore()` 函数用于将一个类定义为 Pinia 存储。它允许你定义一个类，该类的实例将作为 Pinia 存储的实例。
+`toStore()` 函数用于将一个类转换为 Pinia 存储。它允许你定义一个类，该类的实例将作为 Pinia 存储的实例。
 
 `toStore()` 函数的语法如下：
 
@@ -140,12 +183,68 @@ toStore(storeId: string, Class: function)
 ```
 
 - `storeId`（必需）：Pinia 存储的ID。
-- `Class`（必需）：待定义为 Pinia 存储的类。
+- `Class`（必需）：待转换为 Pinia 存储的类。
+
+注意：
+- `toStore` 函数支持类的继承。
+- 类中定义的属性将成为 Pinia 存储中的状态。
+- 类中定义的 getter 方法将成为 Pinia 存储中的 getter。
+- 类中定义的普通方法将成为 Pinia 存储中的 action。
+
+示例：
+```js
+import { toStore } from '@qubit-ltd/pinia-decorator';
+
+class UserStore {
+  username = '';
+  token = null;
+  
+  get isLoggedIn() {
+    return !!this.token;
+  }
+  
+  async login(username, password) {
+    // 登录逻辑
+    this.username = username;
+    this.token = await api.getToken(username, password);
+  }
+  
+  logout() {
+    this.username = '';
+    this.token = null;
+  }
+}
+
+export default toStore('user', UserStore);
+```
 
 ### <span id="raw-field">`@RawField`</span>
 
 `@RawField` 装饰器用于将一个类的字段标记为原始字段，这样该类被转换为 Pinia store 后，该
 字段表示的状态不会被转换为响应式状态。
+
+`@RawField` 装饰器的语法如下：
+```javascript
+@RawField
+fieldName;
+```
+
+示例：
+```js
+class UserStore {
+  username = '';
+  
+  @RawField
+  logger = createLogger('UserStore');  // 这个字段不会成为响应式的
+  
+  login(username, password) {
+    this.logger.info(`用户 ${username} 尝试登录`);
+    // 登录逻辑
+  }
+}
+
+export default toStore('user', UserStore);
+```
 
 ## <span id="example">示例</span>
 
@@ -193,7 +292,7 @@ export default toVue(MyComponent);
 下面是一个使用 `toStore()` 函数的示例，注意该函数支持类的继承：
 
 ```javascript
-import { toStore, RawField } from '@qubit-ltd/pinia-decorators';
+import { toStore, RawField } from '@qubit-ltd/pinia-decorator';
 import { Logger } from '@qubit-ltd/logging';
 import dayjs from 'dayjs';
 
@@ -224,15 +323,15 @@ class BaseUserStore {
   }
 }
 
-class UserStore extends BaseUserStore {     // support class inheritance 
+class UserStore extends BaseUserStore {     // 支持类的继承 
   avatar = '';
 
   birthday = '';
 
   @RawField
-  logger = Logger.getLogger('store.user'); // this field is marked as raw field
+  logger = Logger.getLogger('store.user'); // 这个字段被标记为原始字段
 
-  get age() { // override the super class getter
+  get age() { // 覆盖父类的 getter
     return dayjs().diff(this.birthday, 'year');
   }
 
@@ -240,12 +339,12 @@ class UserStore extends BaseUserStore {     // support class inheritance
     this.avatar = avatar;
   }
 
-  updatePassword(password) {
+  updatePassword(newPassword) {
     this.password = newPassword;
     return api.updatePassword(this.username, newPassword);
   }
 
-  login() {   // override the super class method
+  login() {   // 覆盖父类的方法
     this.logger.info('Logging in as:', this.username);
     return api.login(this.username, this.password);
   }
@@ -300,51 +399,51 @@ const useUserStore = defineStore('user', {
 export default useUserStore;
 ```
 
-我们可以按如下方式在 Vue 组件中使用 `UserStore`：
+我们可以按如下方式在 Vue 组件中使用 `user` 存储：
 
 ```vue
 <template>
   <div>
-    <div>Username: {{ username }}</div>
-    <div>Nickname: {{ nickname }}</div>
-    <div>Age: {{ age }}</div>
-    <div>Avatar: <img :src="avatar" /></div>
-    <button @click="setNickname('new-nickname')">Set Nickname</button>
-    <button @click="avatar = 'new-avatar.png'">Set Avatar</button>
-    <button @click="updatePassword('new-password')">Change Password</button>
-    <button @click="login()">Login</button>
+    <div>用户名: {{ username }}</div>
+    <div>昵称: {{ nickname }}</div>
+    <div>年龄: {{ age }}</div>
+    <div>头像: <img :src="avatar" /></div>
+    <button @click="setNickname('新昵称')">设置昵称</button>
+    <button @click="avatar = '新头像.png'">设置头像</button>
+    <button @click="updatePassword('新密码')">修改密码</button>
+    <button @click="login()">登录</button>
   </div>
 </template>
 <script>
-  import { Component, toVue } from '@qubit-ltd/vue3-class-component';
-  import { State, Getter, Action } from '@qubit-ltd/pinia-decorators';
-  import UserStore from 'src/stores/user';
+import { Component, toVue } from '@qubit-ltd/vue3-class-component';
+import { State, WritableState, Getter, Action } from '@qubit-ltd/pinia-decorator';
+import UserStore from 'src/stores/user';
 
-  @Component
-  class UserPage {
-    @State(UserStore)
-    username;
+@Component
+class UserPage {
+  @State(UserStore)
+  username;
 
-    @State(UserStore)
-    nickname;
+  @State(UserStore)
+  nickname;
 
-    @WritableState(UserStore)
-    avatar;
+  @WritableState(UserStore)
+  avatar;
 
-    @Getter(UserStore)
-    age;
+  @Getter(UserStore)
+  age;
 
-    @Action(UserStore)
-    setNickname;
+  @Action(UserStore)
+  setNickname;
 
-    @Action(UserStore)
-    updatePassword;
+  @Action(UserStore)
+  updatePassword;
 
-    @Action(UserStore)
-    login;
-  }
+  @Action(UserStore)
+  login;
+}
 
-  export default toVue(UserPage);
+export default toVue(UserPage);
 </script>
 ```
 
@@ -369,7 +468,6 @@ export default useUserStore;
 [Pinia]: https://pinia.vuejs.org/
 [Vue]: https://vuejs.org/
 [Vue 3]: https://vuejs.org/
-[Vue 类风格组件]: https://npmjs.com/package/@qubit-ltd/vue3-class-component
 [Vue 类风格组件]: https://npmjs.com/package/@qubit-ltd/vue3-class-component
 [vue3-class-component]: https://npmjs.com/package/@qubit-ltd/vue3-class-component
 [JavaScript 装饰器的第三阶段提案]: https://github.com/tc39/proposal-decorators
