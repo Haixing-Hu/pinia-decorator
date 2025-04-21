@@ -1,6 +1,6 @@
 {
   "name": "@qubit-ltd/pinia-decorator",
-  "version": "3.4.0",
+  "version": "3.4.1",
   "description": "Provides class fields decorators for Pinia and vue3-class-component.",
   "author": "Haixing Hu",
   "license": "Apache-2.0",
@@ -49,7 +49,7 @@
   },
   "peerDependencies": {
     "@babel/runtime": "^7.27.0",
-    "@qubit-ltd/vue3-class-component": "^2.3.3",
+    "@qubit-ltd/vue3-class-component": "^2.4.0",
     "pinia": "^3.0.2",
     "vue": "^3.5.13"
   },
