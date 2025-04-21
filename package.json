@@ -43,7 +43,9 @@
     "test": "jest",
     "lint": "eslint ./src",
     "doc": "jsdoc -c jsdoc.json",
-    "deploy": "npm run lint && npm run test && npm run build:all && npm publish --registry='https://npm.qubit.ltd/' --access public"
+    "deploy": "npm run lint && npm run test && npm run build:all && npm publish --registry='https://npm.qubit.ltd/' --access public",
+    "deploy:public": "npm run lint && npm run test && npm run build:all && npm publish --registry='https://registry.npmjs.org/' --access public",
+    "deploy:all": "npm run deploy && npm publish --registry='https://registry.npmjs.org/' --access public"
   },
   "peerDependencies": {
     "@babel/runtime": "^7.26.0",
