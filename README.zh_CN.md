@@ -16,24 +16,26 @@
 2. 它支持 [Vue 3]。
 3. 它支持使用 [vue3-class-component] 实现的 JavaScript 类风格 Vue 组件，
    而 [pinia-class] 主要针对使用 [vue-facing-decorator] 实现的 TypeScript 类风格 Vue 组件。
-4. 它提供了 [`toStore`](#to-store) 函数，用于将一个类转换为 Pinia 存储。
+4. 它提供了 [toStore](#tostore-函数) 函数，用于将一个类转换为 Pinia 存储。
 
 ## 目录
 
-- [安装](#installation)
-- [使用](#usage)
-  - [`@State`](#state)
-  - [`@WritableState`](#writable-state)
-  - [`@Getter`](#getter)
-  - [`@Action`](#action)
-  - [`@Store`](#store)
-  - [`toStore`](#to-store)
-  - [`@RawField`](#raw-field)
-- [示例](#example)
-- [贡献](#contributing)
-- [许可证](#license)
+- [pinia-decorator](#pinia-decorator)
+  - [目录](#目录)
+  - [安装](#安装)
+  - [使用](#使用)
+    - [@State 装饰器](#state-装饰器)
+    - [@WritableState 装饰器](#writablestate-装饰器)
+    - [@Getter 装饰器](#getter-装饰器)
+    - [@Action 装饰器](#action-装饰器)
+    - [@Store 装饰器](#store-装饰器)
+    - [@RawField 装饰器](#rawfield-装饰器)
+    - [toStore 函数](#tostore-函数)
+  - [示例](#示例)
+  - [贡献](#贡献)
+  - [许可证](#许可证)
 
-## <span id="installation">安装</span>
+## <span id="安装">安装</span>
 
 你可以通过 npm 或 yarn 安装 [pinia-decorator]：
 
@@ -45,19 +47,19 @@ npm install @qubit-ltd/pinia-decorator
 yarn add @qubit-ltd/pinia-decorator
 ```
 
-## <span id="usage">使用</span>
+## <span id="使用">使用</span>
 
-[pinia-decorator] 为 [Vue 3 类风格组件] 提供了以下装饰器：
+[pinia-decorator] 为 [Vue 3 类风格组件] 提供了以下装饰器/函数：
 
-- `@State`：用于将只读状态从 [Pinia] 存储注入到组件中。
-- `@WritableState`：用于将可写状态从 [Pinia] 存储注入到组件中。
-- `@Getter`：用于将 getter 从 [Pinia] 存储注入到组件中。
-- `@Action`：用于将 action 从 [Pinia] 存储注入到组件中。
-- `@Store`：用于将整个 [Pinia] 存储注入到组件中。
-- `toStore`：用于将一个类转换为 Pinia 存储。
-- `@RawField`：用于将一个类的字段标记为原始字段（非响应式字段）。
+- @State：用于将只读状态从 [Pinia] 存储注入到组件中。
+- @WritableState：用于将可写状态从 [Pinia] 存储注入到组件中。
+- @Getter：用于将 getter 从 [Pinia] 存储注入到组件中。
+- @Action：用于将 action 从 [Pinia] 存储注入到组件中。
+- @Store：用于将整个 [Pinia] 存储注入到组件中。
+- @RawField：用于将一个类的字段标记为原始字段（非响应式字段）。
+- toStore：用于将一个类转换为 [Pinia] 存储。
 
-### <span id="state">`@State`</span>
+### <span id="state-装饰器">@State 装饰器</span>
 
 `@State` 装饰器用于将只读状态从 [Pinia] 存储注入到 [Vue 类风格组件] 中。
 它允许你在组件内部访问和使用 [Pinia] 存储的状态。
@@ -81,7 +83,7 @@ username;  // 注入用户存储中的 'username' 状态
 userAvatar;  // 将用户存储中的 'avatar' 状态注入为 'userAvatar'
 ```
 
-### <span id="writable-state">`@WritableState`</span>
+### <span id="writablestate-装饰器">@WritableState 装饰器</span>
 
 `@WritableState` 装饰器与 `@State` 类似，但它允许你将可写状态从 [Pinia] 存储注入到 
 [Vue 类风格组件] 中。这意味着你可以在组件内部既读取又修改 [Pinia] 存储的状态值。
@@ -105,7 +107,7 @@ nickname;  // 注入用户存储中的 'nickname' 状态，允许读取和修改
 userAvatar;  // 将用户存储中的 'avatar' 状态注入为 'userAvatar'，允许读取和修改
 ```
 
-### <span id="getter">`@Getter`</span>
+### <span id="getter-装饰器">@Getter 装饰器</span>
 
 `@Getter` 装饰器用于将 getter 从 [Pinia] 存储注入到 [Vue 类风格组件] 中。
 它允许你在组件内部调用 [Pinia] 存储的 getter 函数。
@@ -129,7 +131,7 @@ isLoggedIn;  // 注入用户存储中的 'isLoggedIn' getter
 userName;  // 将用户存储中的 'fullName' getter 注入为 'userName'
 ```
 
-### <span id="action">`@Action`</span>
+### <span id="action-装饰器">@Action 装饰器</span>
 
 `@Action` 装饰器用于将 action 从 [Pinia] 存储注入到 [Vue 类风格组件] 中。
 它允许你在组件内部调用存储的 action 函数。
@@ -153,7 +155,7 @@ login;  // 注入用户存储中的 'login' action
 updateUserProfile;  // 将用户存储中的 'updateProfile' action 注入为 'updateUserProfile'
 ```
 
-### <span id="store">`@Store`</span>
+### <span id="store-装饰器">@Store 装饰器</span>
 
 `@Store` 装饰器用于将整个 [Pinia] 存储注入到 Vue 类风格组件中。它允许你访问存储的所有状态、
 getter 和 action。
@@ -172,9 +174,37 @@ getter 和 action。
 userStore;  // 将整个用户存储注入为 'userStore'
 ```
 
-### <span id="to-store">`toStore()`</span>
+### <span id="rawfield-装饰器">@RawField 装饰器</span>
 
-`toStore()` 函数用于将一个类转换为 Pinia 存储。它允许你定义一个类，该类的实例将作为 Pinia 存储的实例。
+`@RawField` 装饰器用于将一个类的字段标记为原始字段，这样该类被转换为 Pinia store 后，该
+字段表示的状态不会被转换为响应式状态。
+
+`@RawField` 装饰器的语法如下：
+```javascript
+@RawField
+fieldName;
+```
+
+示例：
+```js
+class UserStore {
+  username = '';
+  
+  @RawField
+  logger = createLogger('UserStore');  // 这个字段不会成为响应式的
+  
+  login(username, password) {
+    this.logger.info(`用户 ${username} 尝试登录`);
+    // 登录逻辑
+  }
+}
+
+export default toStore('user', UserStore);
+```
+
+### <span id="tostore-函数">toStore 函数</span>
+
+`toStore()` 函数用于将一个类转换为 [Pinia] 存储。它允许你定义一个类，该类的实例将作为 Pinia 存储的实例。
 
 `toStore()` 函数的语法如下：
 
@@ -218,35 +248,7 @@ class UserStore {
 export default toStore('user', UserStore);
 ```
 
-### <span id="raw-field">`@RawField`</span>
-
-`@RawField` 装饰器用于将一个类的字段标记为原始字段，这样该类被转换为 Pinia store 后，该
-字段表示的状态不会被转换为响应式状态。
-
-`@RawField` 装饰器的语法如下：
-```javascript
-@RawField
-fieldName;
-```
-
-示例：
-```js
-class UserStore {
-  username = '';
-  
-  @RawField
-  logger = createLogger('UserStore');  // 这个字段不会成为响应式的
-  
-  login(username, password) {
-    this.logger.info(`用户 ${username} 尝试登录`);
-    // 登录逻辑
-  }
-}
-
-export default toStore('user', UserStore);
-```
-
-## <span id="example">示例</span>
+## <span id="示例">示例</span>
 
 以下是如何在 Vue 组件中使用这些装饰器的简单示例：
 
@@ -452,13 +454,13 @@ export default toVue(UserPage);
 - [使用 vite 的演示项目](https://github.com/haixing-hu/pinia-decorator-demo-vite)
 - [使用 webpack 的演示项目](https://github.com/haixing-hu/pinia-decorator-demo-webpack)
 
-## <span id="contributing">贡献</span>
+## <span id="贡献">贡献</span>
 
 如果你发现任何问题或有改进建议，请随时在 [GitHub 仓库] 中提出问题或提交请求。
 
 我们欢迎你的贡献和反馈！
 
-## <span id="license">许可证</span>
+## <span id="许可证">许可证</span>
 
 `pinia-decorator` 遵循 Apache 2.0 许可证分发。
 
